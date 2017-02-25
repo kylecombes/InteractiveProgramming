@@ -1,8 +1,6 @@
 """Ice Cream Game Code"""
 
 
-
-
 import pygame
 import time
 import random
@@ -31,6 +29,15 @@ pygame.display.set_caption('The Best Ice Cream Game Known to Man')
 #pygame.display.update() #a parameter passes to this will update a specifici thing, but leaving it blank makes it update all
 #pygame.display.flip() is the same thing as pygame.display.update
 
+def makeCone():
+	pass
+
+def makeScoop():
+	pass
+
+
+
+
 class Background(pygame.sprite.Sprite):
 	def __init__(self, image_file, location):
 		pygame.sprite.Sprite.__init__(self)
@@ -39,6 +46,7 @@ class Background(pygame.sprite.Sprite):
 		self.rect.left, self.rect.top = location
 
 BackGround = Background('space.png',[0,0])
+
 
 
 def gameLoop():
@@ -67,6 +75,10 @@ def gameLoop():
 		gameDisplay.fill(white)#one way to draw
 		#between fill (above) and update is where you render other graphics
 		gameDisplay.blit(BackGround.image, BackGround.rect)
+
+		#call draw function?
+		makeCone()
+		makeScoop()
 
 		pygame.display.update() #updates the screen (for every run through the loop)
 
