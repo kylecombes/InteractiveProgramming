@@ -16,16 +16,19 @@ class Graphic(pygame.sprite.Sprite):
 
     def __init__(self):
         pass
-    #
-    # @abstractmethod
-    # def draw(self, canvas):
-    #     """ Draws the element on the given canvas. Called when updating the screen. """
-    #     pass
 
-    # @abstractmethod
-    # def get_bounds(self):
-    #     """ Gets the bounds of the rectangle inscribing the object on the canvas.
-    #
-    #         returns: a tuple in the form of (x1, y1, x2, y2)
-    #     """
-    #     pass
+    def move(self, delta_x, delta_y):
+        """ Shifts the graphic
+
+            delta_x: int - number of pixels to shift in the x-direction
+            delta_y: int - number of pixels to shift in the y-direction
+        """
+        move_ip(delta_x, delta_y)
+
+    def get_bounds(self):
+        """ Gets the bounds of the rectangle inscribing the object on the canvas.
+
+            returns: a tuple in the form of (x1, y1, x2, y2)
+        """
+        r = self.rect
+        return (r.x, r.y, r.x+r.w, r.y+r.h) if r else None
