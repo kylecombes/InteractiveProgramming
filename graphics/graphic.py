@@ -5,6 +5,8 @@
     Graphic and implement all of the required methods.
 """
 from abc import ABCMeta
+import pygame
+
 
 class Graphic(pygame.sprite.Sprite):
     __metaclass__ = ABCMeta
@@ -15,7 +17,7 @@ class Graphic(pygame.sprite.Sprite):
     velocity = None # (int,int) - the velocity of the object in m/s
 
     def __init__(self):
-        pass
+        pygame.sprite.Sprite.__init__(self)
 
     def move(self, delta_x, delta_y):
         """ Shifts the graphic
@@ -23,12 +25,4 @@ class Graphic(pygame.sprite.Sprite):
             delta_x: int - number of pixels to shift in the x-direction
             delta_y: int - number of pixels to shift in the y-direction
         """
-        move_ip(delta_x, delta_y)
-
-    def get_bounds(self):
-        """ Gets the bounds of the rectangle inscribing the object on the canvas.
-
-            returns: a tuple in the form of (x1, y1, x2, y2)
-        """
-        r = self.rect
-        return (r.x, r.y, r.x+r.w, r.y+r.h) if r else None
+        self.rect.move_ip(delta_x, delta_y)

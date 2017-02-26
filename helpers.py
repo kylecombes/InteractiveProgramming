@@ -1,19 +1,17 @@
 #! /usr/bin/env python
 
-import os, sys
+import os
 import pygame
 from pygame.locals import *
 
+
 def load_image(name, colorkey=None):
-    fullname = os.path.join('data', 'images')
     fullname = os.path.join(name)
     try:
         image = pygame.image.load(fullname)
-    #except pygame.error, message:
     except pygame.error:
         print ('Cannot load image:', fullname)
         raise SystemExit
-        #raise SystemExit, message
     image = image.convert()
     if colorkey is not None:
         if colorkey is -1:
