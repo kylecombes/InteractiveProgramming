@@ -1,7 +1,5 @@
 """Ice Cream Game Code"""
 
-
-import time
 from helpers import *
 from graphics.ice_cream_cone import IceCreamCone
 from graphics.background import Background
