@@ -1,7 +1,13 @@
-import Graphic
-class IceCreamCone:
 
-    def __init__(self):
+import Graphic
+import os, syss
+import pygame
+from pygame.locals import *
+from helpers import *
+
+class IceCreamCone():
+
+    def __init__(self, scale, x_pos, y_pos):
         """ Initializes an IceCreamCone object
 
             scale: an int used to scale the width and height to control the size
@@ -15,6 +21,12 @@ class IceCreamCone:
         self.sprite_group.add(cone)
         # Create a new list to keep track of the scoops on the cone
         self.scoops = list()
+        self.con_img = pygame.image.load('assets/img/cone.png')
+
+    def move(self, dx, dy):
+        # Move each sprite in our group
+        for sprite in self.sprite_group.sprites:
+            sprite.rect.move_ip(xMove,yMove)
 
     def add_scoop(self, scoop):
         """ Adds a scoop to the top of the stack on the cone.
@@ -26,14 +38,18 @@ class IceCreamCone:
         self.scoops.append(scoop)
         self.sprite_group.add(scoop)
 
-    def draw(self, canvas):
+    def draw(self, screen):
         """ Draws the ice cream cone and stacked scoops on the screen """
-        self.sprite_group.draw(canvas)
+        # Draw the cone
+        gameDisplay.blit(self.cone_img, self.rect)
+        # Draw the scoops
+        self.sprite_group.draw(screen)
 
-class EmptyCone(Graphic):
+class EmptyCone():
 
     def __init__(self, rect=None):
         pygame.sprite.Sprite.__init__(self)
         self.image, self.rect = load_image('assets/img/cone.png',-1)
+        self.rect = self.image.get_rect()
         if rect != None:
             self.rect = rect
