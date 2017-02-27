@@ -37,7 +37,7 @@ background = Background(os.path.join('assets', 'img', 'space_bg.png'), [0, 0])
 
 game_exit = False
 clock = pygame.time.Clock()  # setting up frames per second
-cone = IceCreamCone(1, 100, 100)
+cone = IceCreamCone(10, 100, 100)
 # game loop
 while not game_exit:
 	for event in pygame.event.get():  # getting the events
@@ -46,7 +46,6 @@ while not game_exit:
 		if event.type == pygame.KEYDOWN:
 			if event.key == pygame.K_LEFT:
 				cone.move(-CONE_MOVE_INCREMENT, 0)
-			# put what we want to happen to objects here
 			elif event.key == pygame.K_RIGHT:
 				cone.move(CONE_MOVE_INCREMENT, 0)
 			elif event.key == pygame.K_UP:
@@ -54,7 +53,7 @@ while not game_exit:
 			elif event.key == pygame.K_DOWN:
 				cone.move(0, CONE_MOVE_INCREMENT)
 			elif event.key == pygame.K_SPACE:
-				cone.add_scoop(Scoop(0, 0, 1))
+				cone.add_scoop(Scoop(0, 0, 0.5))
 			elif event.key == pygame.K_q:
 				game_exit = True
 
