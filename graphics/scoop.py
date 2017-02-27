@@ -1,4 +1,4 @@
-from graphic import Graphic
+from graphics.graphic import Graphic
 from helpers import *
 import random
 
@@ -14,15 +14,10 @@ class Scoop(Graphic):
         """
         Graphic.__init__(self)
 
-        choose_scoop = random.randint(1,2)
-        if choose_scoop == 1:
-        	self.image, self.rect = load_image(os.path.join('assets', 'img', 'srawberry.png'), -1)
-        elif choose_scoop == 2:
-        	self.image, self.rect = load_image(os.path.join('assets', 'img', 'scoop-white.png'), -1)
-        elif choose_scoop == 3:
-        	self.image, self.rect = load_image(os.path.join('assets', 'img', 'mint.png'), -1)
-        elif choose_scoop == 4:
-        	self.image, self.rect = load_image(os.path.join('assets', 'img', 'rainbow.png'), -1)
+        choose_scoop = random.randint(0,1)
+        types_of_cream = ['srawberry.png', 'scoop-white.png',  'mint.png', 'rainbow.png']
+        self.image, self.rect = load_image(os.path.join('assets', 'img', types_of_cream[choose_scoop]), -1)
+
         self.rect.x = x_pos
         self.rect.y = y_pos
         self.scale = scale

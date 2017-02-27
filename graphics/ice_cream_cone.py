@@ -1,4 +1,4 @@
-from graphic import Graphic
+from graphics.graphic import Graphic
 from helpers import *
 
 
