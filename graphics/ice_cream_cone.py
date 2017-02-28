@@ -23,6 +23,8 @@ class IceCreamCone(Graphic):
         self.sprite_group.add(self.cone)
         # Create a new list to keep track of the scoops on the cone
         self.scoops = list()
+
+
         self.cone_img, self.rect = load_image(os.path.join('assets', 'img', 'cone.png'))
 
     def move(self, dx, dy):
@@ -42,6 +44,8 @@ class IceCreamCone(Graphic):
         scoop.rect.centerx = self.cone.rect.centerx
         # Put it on top
         scoop_count = len(self.scoops)
+
+        
         effective_scoop_height = scoop.rect.height - self.SCOOP_SCOOP_OFFSET
         offset_from_cone_bottom = scoop_count*effective_scoop_height + self.cone.rect.height - self.SCOOP_CONE_OFFSET
         scoop.rect.bottom = self.cone.rect.bottom - offset_from_cone_bottom
@@ -60,5 +64,6 @@ class EmptyCone(Graphic):
         Graphic.__init__(self)
         self.image, self.rect = load_image(os.path.join('assets', 'img', 'cone.png'), -1)
         self.rect = self.image.get_rect()
+        #self.rect.left, self.rect.top = location
         if rect:
             self.rect = rect

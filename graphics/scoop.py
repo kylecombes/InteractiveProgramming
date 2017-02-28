@@ -15,7 +15,7 @@ class Scoop(Graphic):
         Graphic.__init__(self)
 
         choose_scoop = random.randint(0,1)
-        types_of_cream = ['srawberry.png', 'scoop-white.png',  'mint.png', 'rainbow.png']
+        types_of_cream = ['strawberry.png', 'scoop-white.png',  'mint.png', 'rainbow.png']
         self.image, self.rect = load_image(os.path.join('assets', 'img', types_of_cream[choose_scoop]), -1)
 
         self.rect.x = x_pos

@@ -33,14 +33,15 @@ pygame.key.set_repeat(50, 20)
 #pygame.display.update() #a parameter passes to this will update a specified thing, but leaving it blank makes it update all
 #pygame.display.flip() is the same thing as pygame.display.update
 
-backgroundSpace = Background(os.path.join('assets', 'img', 'space_bg.png'), [0, 00])
-backgroundSky = Background(os.path.join('assets', 'img', 'sky.jpg'), [0, 400])
-backgroundGround = Background(os.path.join('assets', 'img', 'sky.jpg'), [0, 400])
+#This backkground function is one gaint picture tha tgoes form the ground to space.
+#The x compent of the parameters and stays constant. The y compent changes. At y = 0, it is the highest point in the picture
+#The lowest y value is 4400
+
 
 game_exit = False
 clock = pygame.time.Clock()  # setting up frames per second
-cone = IceCreamCone(10, 100, 100)
-print(cone.scoops)
+cone = IceCreamCone(10, 300, 300)
+
 # game loop
 while not game_exit:
 	for event in pygame.event.get():  # getting the events
@@ -61,17 +62,31 @@ while not game_exit:
 				game_exit = True
 
 	# making the background
-	screen.blit(backgroundSpace.image, backgroundSpace.rect)
-	screen.blit(backgroundSky.image, backgroundSky.rect)
-	screen.blit(backgroundGround.image, backgroundGround.rect)
+	change_in_y = 10
+
+	if len(cone.scoops)<= 5:
+		background_y = -4400
+	else:
+		new_y = (len(cone.scoops)-8)*change_in_y
+
+		background_y = -4400 + new_y
+		print(background_y)
+
+
+	 
+
+	backgroundFull = Background(os.path.join('assets', 'img', 'fullbackground.jpg'), [-11, background_y])
+	screen.blit(backgroundFull.image, backgroundFull.rect)
 
 	cone.draw(screen)
+	
+	
 
 	pygame.display.update()  # updates the screen (for every run through the loop)
 
 	clock.tick(FPS)  # setting frames per second
 
-pygame.display.update()
+#pygame.display.update()
 # time.sleep(2)
 pygame.quit()  # uninitializes pygame
 quit()  # must have a quit
