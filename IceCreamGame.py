@@ -1,6 +1,7 @@
 """Ice Cream Game Code"""
 
 from helpers import *
+import time
 from graphics.ice_cream_cone import IceCreamCone
 from graphics.background import Background
 from graphics.scoop import Scoop
@@ -37,11 +38,15 @@ pygame.key.set_repeat(50, 20)
 #The x compent of the parameters and stays constant. The y compent changes. At y = 0, it is the highest point in the picture
 #The lowest y value is 4400
 
+def message_to_screen(msg, color, xcord, ycord ):  #making a message to user
+	screen_text = font.render(msg, True, color)
+	screen.blit(screen_text, [xcord,ycord])
+
 
 game_exit = False
 clock = pygame.time.Clock()  # setting up frames per second
 cone = IceCreamCone(10, 300, 300)
-
+scoop_height = 51
 
 # game loop
 while not game_exit:
@@ -59,22 +64,32 @@ while not game_exit:
 				#cone.move(0, CONE_MOVE_INCREMENT)
 			elif event.key == pygame.K_SPACE:
 				cone.add_scoop(Scoop(0, 0, 0.5))
+				if len(cone.scoops)>= scoops_before_change:
+					cone.move(0, scoop_height) #makes the cone move down if the screen is moving up
 			elif event.key == pygame.K_q:
 				game_exit = True
 
 	# making the background
 	change_in_y = 20
+	scoops_before_change = 5
 
-	if len(cone.scoops)<= 3:
+	if len(cone.scoops)<= scoops_before_change:
 		background_y = -4400
 	else:
 		new_y = (len(cone.scoops)-3)*change_in_y
 
 		background_y = -4400 + new_y
-		#cone.rect.right = 100
-		#cone.rect.bottom = 100
-		#cone.move(0,change_in_y/5)
-		"""Here we need to a situlation that the cone moves down with each time the background moves up"""
+
+	if background_y > 0:
+		background_y = 0
+		backgroundFull = Background(os.path.join('assets', 'img', 'fullbackground.jpg'), [-11, background_y])
+		screen.blit(backgroundFull.image, backgroundFull.rect)
+		message_to_screen("You Win!", white, display_width/2,display_height/2)
+		pygame.display.update()
+		time.sleep(2)
+		game_exit = True
+		quit()
+		
 
 		
 

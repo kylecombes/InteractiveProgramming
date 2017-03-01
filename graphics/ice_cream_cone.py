@@ -48,6 +48,7 @@ class IceCreamCone(Graphic):
 
         
         effective_scoop_height = scoop.rect.height - self.SCOOP_SCOOP_OFFSET
+        
         offset_from_cone_bottom = scoop_count*effective_scoop_height + self.cone.rect.height - self.SCOOP_CONE_OFFSET
         scoop.rect.bottom = self.cone.rect.bottom - offset_from_cone_bottom
 
