@@ -15,7 +15,8 @@ class IceCreamCone(Graphic):
             y_pos: the starting y-position of the cone
         """
         Graphic.__init__(self)
-
+        self.x_pos = x_pos
+        self.y_pos = y_pos
         # Create a new sprite group to handle drawing all our sprites
         self.sprite_group = pygame.sprite.OrderedUpdates()
         # Create a new empty cone and add it to our sprite group
@@ -60,10 +61,11 @@ class IceCreamCone(Graphic):
 
 class EmptyCone(Graphic):
 
-    def __init__(self, rect=None):
+    def __init__(self, rect=None ):
         Graphic.__init__(self)
         self.image, self.rect = load_image(os.path.join('assets', 'img', 'cone.png'), -1)
         self.rect = self.image.get_rect()
-        #self.rect.left, self.rect.top = location
+        self.rect.right = 400
+        self.rect.bottom = 600
         if rect:
             self.rect = rect

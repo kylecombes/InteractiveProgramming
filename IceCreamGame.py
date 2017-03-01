@@ -42,6 +42,7 @@ game_exit = False
 clock = pygame.time.Clock()  # setting up frames per second
 cone = IceCreamCone(10, 300, 300)
 
+
 # game loop
 while not game_exit:
 	for event in pygame.event.get():  # getting the events
@@ -52,26 +53,30 @@ while not game_exit:
 				cone.move(-CONE_MOVE_INCREMENT, 0)
 			elif event.key == pygame.K_RIGHT:
 				cone.move(CONE_MOVE_INCREMENT, 0)
-			elif event.key == pygame.K_UP:
-				cone.move(0, -CONE_MOVE_INCREMENT)
-			elif event.key == pygame.K_DOWN:
-				cone.move(0, CONE_MOVE_INCREMENT)
+			#elif event.key == pygame.K_UP:
+				#cone.move(0, -CONE_MOVE_INCREMENT)
+			#elif event.key == pygame.K_DOWN:
+				#cone.move(0, CONE_MOVE_INCREMENT)
 			elif event.key == pygame.K_SPACE:
 				cone.add_scoop(Scoop(0, 0, 0.5))
 			elif event.key == pygame.K_q:
 				game_exit = True
 
 	# making the background
-	change_in_y = 10
+	change_in_y = 20
 
-	if len(cone.scoops)<= 5:
+	if len(cone.scoops)<= 3:
 		background_y = -4400
 	else:
-		new_y = (len(cone.scoops)-8)*change_in_y
+		new_y = (len(cone.scoops)-3)*change_in_y
 
 		background_y = -4400 + new_y
-		print(background_y)
+		#cone.rect.right = 100
+		#cone.rect.bottom = 100
+		#cone.move(0,change_in_y/5)
+		"""Here we need to a situlation that the cone moves down with each time the background moves up"""
 
+		
 
 	 
 
