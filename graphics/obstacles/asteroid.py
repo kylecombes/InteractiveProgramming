@@ -1,4 +1,6 @@
 from graphics.obstacles.obstacle import Obstacle
+from helpers import *
+
 
 
 class Asteroid(Obstacle):
@@ -11,7 +13,21 @@ class Asteroid(Obstacle):
             scale: int - scales the size of the scoop
         """
         Obstacle.__init__(self)
+        self.image, self.rect = load_image(os.path.join('assets', 'img', 'astroid.png'), -1)
 
+    def draw(self, screen):
+        """ Draws the Obstacles """
+        screen.blit(self.image, (0,0))
+
+
+
+    def move(self, key):
+        """Move the obstacles with a certian speed"""
+        xMove = 10
+        yMove = 10
+        self.rect.move_ip(xMove,yMove);
+
+        #TODO ADD move to main loop
 
     def update_state(self, dt):
         # TODO Update the location of the asteroid

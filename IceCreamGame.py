@@ -5,6 +5,7 @@ import time
 from graphics.ice_cream_cone import IceCreamCone
 from graphics.background import Background
 from graphics.scoop import Scoop
+from graphics.obstacles.asteroid import Asteroid
 
 pygame.init()
 
@@ -47,6 +48,7 @@ game_exit = False
 clock = pygame.time.Clock()  # setting up frames per second
 cone = IceCreamCone(10, 300, 300)
 scoop_height = 51
+obstacle1 = Asteroid()
 
 # game loop
 while not game_exit:
@@ -99,6 +101,7 @@ while not game_exit:
 	screen.blit(backgroundFull.image, backgroundFull.rect)
 
 	cone.draw(screen)
+	obstacle1.draw(screen)
 	
 	
 
