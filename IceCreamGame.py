@@ -101,7 +101,7 @@ while not game_exit:
 	screen.blit(backgroundFull.image, backgroundFull.rect)
 
 	cone.draw(screen)
-	obstacle1.draw(screen)
+	#obstacle1.draw(screen)
 	
 	
 
