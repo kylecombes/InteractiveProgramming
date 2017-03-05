@@ -20,7 +20,7 @@ class IceCreamCone(Graphic):
         # Create a new sprite group to handle drawing all our sprites
         self.sprite_group = pygame.sprite.OrderedUpdates()
         # Create a new empty cone and add it to our sprite group
-        self.cone = EmptyCone()
+        self.cone = EmptyCone(x_pos,y_pos)
         self.sprite_group.add(self.cone)
         # Create a new list to keep track of the scoops on the cone
         self.scoops = list()
@@ -62,11 +62,11 @@ class IceCreamCone(Graphic):
 
 class EmptyCone(Graphic):
 
-    def __init__(self, rect=None ):
+    def __init__(self, x_pos, y_pos, rect=None ):
         Graphic.__init__(self)
         self.image, self.rect = load_image(os.path.join('assets', 'img', 'cone.png'), -1)
         self.rect = self.image.get_rect()
-        self.rect.right = 400
-        self.rect.bottom = 600
+        self.rect.right = x_pos
+        self.rect.bottom = y_pos
         if rect:
             self.rect = rect

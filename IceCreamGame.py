@@ -2,10 +2,15 @@
 
 from helpers import *
 import time
+import random
 from graphics.ice_cream_cone import IceCreamCone
 from graphics.background import Background
 from graphics.scoop import Scoop
 from graphics.obstacles.asteroid import Asteroid
+from graphics.obstacles.leaf import Leaf
+from graphics.obstacles.Drone import Drone
+from graphics.obstacles.Ballon import Ballon
+from graphics.obstacles.Bee import Bee
 
 pygame.init()
 
@@ -45,10 +50,34 @@ def message_to_screen(msg, color, xcord, ycord ):  #making a message to user
 
 
 game_exit = False
+
 clock = pygame.time.Clock()  # setting up frames per second
-cone = IceCreamCone(10, 300, 300)
+
 scoop_height = 51
-obstacle1 = Asteroid()
+
+
+
+"""Making Cone and Obstacles"""
+
+cone = IceCreamCone(10, 400, 600) # parameters are scale, xpos, ypos NOTICE: SCALE does not work yet
+obstacle1 = Asteroid(100,200)# start parameters are x_pos and y_pos
+drone1 = Drone(100,100)
+ballon1 = Ballon(200,300)
+bee1 = Bee(200,40)
+
+def pick_random_place():
+	return random.randint(0,display_width)
+
+
+#making leaf instances, if there a more concise way to do this????
+leaf1 = Leaf(pick_random_place(), 0) 
+leaf2 = Leaf(pick_random_place(), 0)
+leaf3 = Leaf(pick_random_place(), 0)
+leaf4 = Leaf(pick_random_place(), 0)
+leaf5 = Leaf(pick_random_place(), 0)
+leaf6 = Leaf(pick_random_place(), 0)
+
+
 
 # game loop
 while not game_exit:
@@ -74,11 +103,12 @@ while not game_exit:
 	# making the background
 	change_in_y = 20
 	scoops_before_change = 5
+	current_number_of_scoops = len(cone.scoops)
 
-	if len(cone.scoops)<= scoops_before_change:
+	if current_number_of_scoops<= scoops_before_change:
 		background_y = -4400
 	else:
-		new_y = (len(cone.scoops)-3)*change_in_y
+		new_y = (current_number_of_scoops-3)*change_in_y
 
 		background_y = -4400 + new_y
 
@@ -91,18 +121,56 @@ while not game_exit:
 		time.sleep(2)
 		game_exit = True
 		quit()
-		
-
-		
-
-	 
 
 	backgroundFull = Background(os.path.join('assets', 'img', 'fullbackground.jpg'), [-11, background_y])
 	screen.blit(backgroundFull.image, backgroundFull.rect)
 
+
+	"""Moveing Obstacles at various locations in sky"""
+
+
+    #IS THERE A MORE CONCISE WAY TO DO THIS?
+	if current_number_of_scoops < 20:
+		leaf1.move_obstacle(0,5,display_width, display_height)
+		leaf1.draw(screen)
+	if current_number_of_scoops > 10:
+		leaf2.move_obstacle(0,7,display_width, display_height)
+		leaf2.draw(screen)
+		leaf3.move_obstacle(0,20,display_width, display_height)
+		leaf3.draw(screen)
+	if current_number_of_scoops > 20:
+		leaf4.move_obstacle(0,7,display_width, display_height)
+		leaf4.draw(screen)
+		leaf5.move_obstacle(0,20,display_width, display_height)
+		leaf5.draw(screen)
+
+
+
+	"""
+	KEY FOR NUMBER OF SCOOPS AND OBSTACLES:
+	0-20: leaves
+	20-40: bee
+	40-60: drones
+	60-80: ballons
+	80-223: asteroids
+	"""
+	
+
+		
+
+
+	
+	#obstacle1.move_obstacle(10,5,display_width, display_height) #first two parameters are x speed and y speed
+	bee1.move_obstacle(10,0,display_width, display_height) #first two parameters are x speed and y speed
+	#drone1.move_obstacle(5,0,display_width, display_height)
+	#ballon1.move_obstacle(5,0,display_width, display_height)
+
+	bee1.draw(screen)
 	cone.draw(screen)
 	#obstacle1.draw(screen)
 	
+	#drone1.draw(screen)
+	#ballon1.draw(screen)
 	
 
 	pygame.display.update()  # updates the screen (for every run through the loop)
