@@ -63,7 +63,7 @@ cone = IceCreamCone(10, 400, 600) # parameters are scale, xpos, ypos NOTICE: SCA
 obstacle1 = Asteroid(100,200)# start parameters are x_pos and y_pos
 drone1 = Drone(100,100)
 ballon1 = Ballon(200,300)
-bee1 = Bee(200,40)
+
 
 def pick_random_place():
 	return random.randint(0,display_width)
@@ -74,10 +74,28 @@ leaf1 = Leaf(pick_random_place(), 0)
 leaf2 = Leaf(pick_random_place(), 0)
 leaf3 = Leaf(pick_random_place(), 0)
 leaf4 = Leaf(pick_random_place(), 0)
-leaf5 = Leaf(pick_random_place(), 0)
-leaf6 = Leaf(pick_random_place(), 0)
 
+bee1 = Bee(pick_random_place(), 0) 
+bee2 = Bee(pick_random_place(), 0)
+bee3 = Bee(pick_random_place(), 0)
+bee4 = Bee(pick_random_place(), 0)
 
+drone1 = Drone(pick_random_place(), 0) 
+drone2 = Drone(pick_random_place(), 0)
+drone3 = Drone(pick_random_place(), 0)
+drone4 = Drone(pick_random_place(), 0)
+
+ballon1 = Ballon(pick_random_place(), 0) 
+ballon2 = Ballon(pick_random_place(), 0)
+ballon3 = Ballon(pick_random_place(), 0)
+ballon4 = Ballon(pick_random_place(), 0)
+
+asteroid1 = Asteroid(pick_random_place(), 0) 
+asteroid2 = Asteroid(pick_random_place(), 0)
+asteroid3 = Asteroid(pick_random_place(), 0)
+asteroid4 = Asteroid(pick_random_place(), 0)
+asteroid5 = Asteroid(pick_random_place(), 0)
+asteroid6 = Asteroid(pick_random_place(), 0)
 
 # game loop
 while not game_exit:
@@ -129,43 +147,34 @@ while not game_exit:
 	"""Moveing Obstacles at various locations in sky"""
 
 
-    #IS THERE A MORE CONCISE WAY TO DO THIS?
-	if current_number_of_scoops < 20:
-		leaf1.move_obstacle(0,5,display_width, display_height)
-		leaf1.draw(screen)
-	if current_number_of_scoops > 10:
-		leaf2.move_obstacle(0,7,display_width, display_height)
-		leaf2.draw(screen)
-		leaf3.move_obstacle(0,20,display_width, display_height)
-		leaf3.draw(screen)
-	if current_number_of_scoops > 20:
-		leaf4.move_obstacle(0,7,display_width, display_height)
-		leaf4.draw(screen)
-		leaf5.move_obstacle(0,20,display_width, display_height)
-		leaf5.draw(screen)
-
+	leaf1.display_moving_leaves(leaf2, leaf3, leaf4, current_number_of_scoops, display_width, display_height, screen)
+	bee1.display_moving_bees(bee2, bee3, bee4, current_number_of_scoops, display_width, display_height, screen)
+	drone1.display_moving_drones(drone2, drone3, drone4, current_number_of_scoops, display_width, display_height, screen)
+	ballon1.display_moving_ballons(ballon2, ballon3, ballon4, current_number_of_scoops, display_width, display_height, screen)
+	asteroid1.display_moving_asteroids(asteroid2, asteroid3, asteroid4, asteroid5, asteroid6, current_number_of_scoops, display_width, display_height, screen)
 
 
 	"""
 	KEY FOR NUMBER OF SCOOPS AND OBSTACLES:
-	0-20: leaves
-	20-40: bee
-	40-60: drones
-	60-80: ballons
-	80-223: asteroids
+	0-30: leaves
+	30-50: bee
+	50-80: drones
+	80-110: ballons
+	110-223: asteroids
 	"""
 	
-
-		
-
-
+	#Collision Handeling
 	
+	#coney = cone.scoop_height
+	#coney = cone.height
+	cone_x = sprite.rect.x
+	#print(conex)
 	#obstacle1.move_obstacle(10,5,display_width, display_height) #first two parameters are x speed and y speed
-	bee1.move_obstacle(10,0,display_width, display_height) #first two parameters are x speed and y speed
+	#bee1.move_obstacle(10,0,display_width, display_height) #first two parameters are x speed and y speed
 	#drone1.move_obstacle(5,0,display_width, display_height)
 	#ballon1.move_obstacle(5,0,display_width, display_height)
 
-	bee1.draw(screen)
+	#bee1.draw(screen)
 	cone.draw(screen)
 	#obstacle1.draw(screen)
 	

@@ -1,5 +1,6 @@
 from graphics.obstacles.obstacle import Obstacle
 from helpers import *
+import random
 
 
 
@@ -22,7 +23,23 @@ class Bee(Obstacle):
         """ Draws the Obstacles """
         screen.blit(self.image, (self.x_pos,self.y_pos))  #The input tuble is the location in x and y respectivly 
 
-
+    def display_moving_bees(self, self2, self3, self4, current_number_of_scoops, display_width, display_height, screen):
+    #IS THERE A MORE CONCISE WAY TO DO THIS?
+        randomspeed = random.randint(5,15)
+        if current_number_of_scoops > 30:
+            self.move_obstacle(0,randomspeed, display_width, display_height)
+            self.draw(screen)
+        if current_number_of_scoops > 33:
+            self2.move_obstacle(1,randomspeed,display_width, display_height)
+            self2.draw(screen)
+        if current_number_of_scoops >40:
+            self3.move_obstacle(2,randomspeed,display_width, display_height)
+            self3.draw(screen)
+        if current_number_of_scoops > 45:
+            self4.move_obstacle(0,randomspeed,display_width, display_height)
+            self4.draw(screen)
+        if current_number_of_scoops > 50:
+            pass
 
     def move_obstacle(self, speed_x, speed_y, display_width, display_height):
         """

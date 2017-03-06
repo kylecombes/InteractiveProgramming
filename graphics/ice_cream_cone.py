@@ -24,6 +24,7 @@ class IceCreamCone(Graphic):
         self.sprite_group.add(self.cone)
         # Create a new list to keep track of the scoops on the cone
         self.scoops = list()
+        #self.height = effective_scoop_height
 
 
         self.cone_img, self.rect = load_image(os.path.join('assets', 'img', 'cone.png'))
@@ -50,14 +51,20 @@ class IceCreamCone(Graphic):
         effective_scoop_height = scoop.rect.height - self.SCOOP_SCOOP_OFFSET
         
         offset_from_cone_bottom = scoop_count*effective_scoop_height + self.cone.rect.height - self.SCOOP_CONE_OFFSET
+        
+
         scoop.rect.bottom = self.cone.rect.bottom - offset_from_cone_bottom
 
         self.scoops.append(scoop)
+
         self.sprite_group.add(scoop)
 
     def draw(self, screen):
-        """ Draws the ice cream cone and stacked scoops on the screen """
+        """ Draws the ice cream c
+        one and stacked scoops on the screen """
         self.sprite_group.draw(screen)
+
+
 
 
 class EmptyCone(Graphic):

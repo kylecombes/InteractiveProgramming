@@ -1,6 +1,6 @@
 from graphics.obstacles.obstacle import Obstacle
 from helpers import *
-
+import random
 
 
 class Ballon(Obstacle):
@@ -22,7 +22,26 @@ class Ballon(Obstacle):
         """ Draws the Obstacles """
         screen.blit(self.image, (self.x_pos,self.y_pos))  #The input tuble is the location in x and y respectivly 
 
-
+    def display_moving_ballons(self, self2, self3, self4, current_number_of_scoops, display_width, display_height, screen):
+        """
+        Displays moving leaves at intervals in the range of the correct background. Takes other
+    instances of ballon obstacle class to get several differnt obstacles.
+    """
+        randomspeed = random.randint(5,15)
+        if current_number_of_scoops > 80:
+            self.move_obstacle(0,randomspeed, display_width, display_height)
+            self.draw(screen)
+        if current_number_of_scoops > 87:
+            self2.move_obstacle(-5,randomspeed,display_width, display_height)
+            self2.draw(screen)
+        if current_number_of_scoops >95:
+            self3.move_obstacle(5,randomspeed,display_width, display_height)
+            self3.draw(screen)
+        if current_number_of_scoops > 100:
+            self4.move_obstacle(0,randomspeed,display_width, display_height)
+            self4.draw(screen)
+        if current_number_of_scoops > 110:
+            pass
 
     def move_obstacle(self, speed_x, speed_y, display_width, display_height):
         """
