@@ -6,11 +6,7 @@ import random
 from graphics.ice_cream_cone import IceCreamCone
 from graphics.background import Background
 from graphics.scoop import Scoop
-from graphics.obstacles.asteroid import Asteroid
-from graphics.obstacles.leaf import Leaf
-from graphics.obstacles.Drone import Drone
-from graphics.obstacles.Ballon import Ballon
-from graphics.obstacles.Bee import Bee
+from making_obstacles import *
 
 pygame.init()
 
@@ -60,42 +56,19 @@ scoop_height = 51
 """Making Cone and Obstacles"""
 
 cone = IceCreamCone(10, 400, 600) # parameters are scale, xpos, ypos NOTICE: SCALE does not work yet
-obstacle1 = Asteroid(100,200)# start parameters are x_pos and y_pos
-drone1 = Drone(100,100)
-ballon1 = Ballon(200,300)
 
 
-def pick_random_place():
+def pick_random_place(display_width):
 	return random.randint(0,display_width)
 
 
-#making obstacle instances, if there a more concise way to do this????
-leaf1 = Leaf(pick_random_place(), 0) 
-leaf2 = Leaf(pick_random_place(), 0)
-leaf3 = Leaf(pick_random_place(), 0)
-leaf4 = Leaf(pick_random_place(), 0)
+#making obstacle instances. Calls the function 'making_obstacles' which returns a tuple of all the instances of each obstacle 
 
-bee1 = Bee(pick_random_place(), 0) 
-bee2 = Bee(pick_random_place(), 0)
-bee3 = Bee(pick_random_place(), 0)
-bee4 = Bee(pick_random_place(), 0)
-
-drone1 = Drone(pick_random_place(), 0) 
-drone2 = Drone(pick_random_place(), 0)
-drone3 = Drone(pick_random_place(), 0)
-drone4 = Drone(pick_random_place(), 0)
-
-ballon1 = Ballon(pick_random_place(), 0) 
-ballon2 = Ballon(pick_random_place(), 0)
-ballon3 = Ballon(pick_random_place(), 0)
-ballon4 = Ballon(pick_random_place(), 0)
-
-asteroid1 = Asteroid(pick_random_place(), 0) 
-asteroid2 = Asteroid(pick_random_place(), 0)
-asteroid3 = Asteroid(pick_random_place(), 0)
-asteroid4 = Asteroid(pick_random_place(), 0)
-asteroid5 = Asteroid(pick_random_place(), 0)
-asteroid6 = Asteroid(pick_random_place(), 0)
+leaf1, leaf2, leaf3, leaf4 = make_leaves(display_width)
+bee1, bee2, bee3, bee4 = make_bees(display_width)
+drone1, drone2, drone3, drone4 = make_drones(display_width)
+ballon1, ballon2, ballon3, ballon4 = make_ballons(display_width)
+asteroid1, asteroid2, asteroid3, asteroid4, asteroid5, asteroid6 = make_asteroids(display_width)
 
 # game loop
 while not game_exit:
@@ -162,7 +135,6 @@ while not game_exit:
 	
 	#Collision Handeling
 	for obs in list_of_opstacles:
-		print(obs)
 		scoop_cone_pos = cone.move(0,0,True) #gives a tuple of the x and y location of the top  left cornor of the sprite group
 		ops_span = range(obs.x_pos, obs.x_pos+100)
 		scoopx_span = range(scoop_cone_pos[0]-10, scoop_cone_pos[0]+100 + 10)
