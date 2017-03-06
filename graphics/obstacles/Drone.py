@@ -25,8 +25,8 @@ class Drone(Obstacle):
     def display_moving_drones(self, self2, self3, self4, current_number_of_scoops, display_width, display_height, screen):
         """
         Displays moving leaves at intervals in the range of the correct background. Takes other
-    instances of drone obstacle class to get several differnt obstacles.
-    """
+        instances of drone obstacle class to get several differnt obstacles.
+        """
         randomspeed = random.randint(5,15)
         if current_number_of_scoops > 50:
             self.move_obstacle(0,randomspeed, display_width, display_height)

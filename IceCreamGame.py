@@ -69,7 +69,7 @@ def pick_random_place():
 	return random.randint(0,display_width)
 
 
-#making leaf instances, if there a more concise way to do this????
+#making obstacle instances, if there a more concise way to do this????
 leaf1 = Leaf(pick_random_place(), 0) 
 leaf2 = Leaf(pick_random_place(), 0)
 leaf3 = Leaf(pick_random_place(), 0)
@@ -107,10 +107,6 @@ while not game_exit:
 				cone.move(-CONE_MOVE_INCREMENT, 0)
 			elif event.key == pygame.K_RIGHT:
 				cone.move(CONE_MOVE_INCREMENT, 0)
-			#elif event.key == pygame.K_UP:
-				#cone.move(0, -CONE_MOVE_INCREMENT)
-			#elif event.key == pygame.K_DOWN:
-				#cone.move(0, CONE_MOVE_INCREMENT)
 			elif event.key == pygame.K_SPACE:
 				cone.add_scoop(Scoop(0, 0, 0.5))
 				if len(cone.scoops)>= scoops_before_change:
@@ -153,6 +149,7 @@ while not game_exit:
 	ballon1.display_moving_ballons(ballon2, ballon3, ballon4, current_number_of_scoops, display_width, display_height, screen)
 	asteroid1.display_moving_asteroids(asteroid2, asteroid3, asteroid4, asteroid5, asteroid6, current_number_of_scoops, display_width, display_height, screen)
 
+	list_of_opstacles= [leaf1, leaf2, leaf3, leaf4, bee1, bee2, bee3, bee4, drone1, drone2, drone3, drone4, ballon1, ballon2, ballon3, ballon4, asteroid1, asteroid2, asteroid3, asteroid4, asteroid5, asteroid6]
 
 	"""
 	KEY FOR NUMBER OF SCOOPS AND OBSTACLES:
@@ -164,15 +161,25 @@ while not game_exit:
 	"""
 	
 	#Collision Handeling
-	
-	#coney = cone.scoop_height
-	#coney = cone.height
-	cone_x = sprite.rect.x
-	#print(conex)
-	#obstacle1.move_obstacle(10,5,display_width, display_height) #first two parameters are x speed and y speed
-	#bee1.move_obstacle(10,0,display_width, display_height) #first two parameters are x speed and y speed
-	#drone1.move_obstacle(5,0,display_width, display_height)
-	#ballon1.move_obstacle(5,0,display_width, display_height)
+	for obs in list_of_opstacles:
+		print(obs)
+		scoop_cone_pos = cone.move(0,0,True) #gives a tuple of the x and y location of the top  left cornor of the sprite group
+		ops_span = range(obs.x_pos, obs.x_pos+100)
+		scoopx_span = range(scoop_cone_pos[0]-10, scoop_cone_pos[0]+100 + 10)
+		X_collision = False
+		Y_collision = False
+		if len(list(set(ops_span) & set(scoopx_span))) > 0:
+			X_collision = True
+		if scoop_cone_pos[1] in range(obs.y_pos-10, obs.y_pos+ 10):
+			Y_collision = True
+		if X_collision and Y_collision:
+			message_to_screen("You Lose!", red, display_width/2,display_height/2)
+			pygame.display.update() 
+			time.sleep(2)
+			game_exit = True
+			quit()
+
+
 
 	#bee1.draw(screen)
 	cone.draw(screen)
@@ -180,7 +187,6 @@ while not game_exit:
 	
 	#drone1.draw(screen)
 	#ballon1.draw(screen)
-	
 
 	pygame.display.update()  # updates the screen (for every run through the loop)
 

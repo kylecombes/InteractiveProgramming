@@ -23,10 +23,10 @@ class Asteroid(Obstacle):
         screen.blit(self.image, (self.x_pos,self.y_pos))  #The input tuble is the location in x and y respectivly 
 
     def display_moving_asteroids(self, self2, self3, self4, self5, self6, current_number_of_scoops, display_width, display_height, screen):
-    """
+        """
         Displays moving leaves at intervals in the range of the correct background. Takes other
-    instances of asteroid obstacle class to get several differnt obstacles.
-    """
+        instances of asteroid obstacle class to get several differnt obstacles.
+        """
         randomspeed = random.randint(15,30)
         if current_number_of_scoops > 110:
             self.move_obstacle(0,randomspeed,display_width, display_height)

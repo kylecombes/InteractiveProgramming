@@ -24,7 +24,10 @@ class Bee(Obstacle):
         screen.blit(self.image, (self.x_pos,self.y_pos))  #The input tuble is the location in x and y respectivly 
 
     def display_moving_bees(self, self2, self3, self4, current_number_of_scoops, display_width, display_height, screen):
-    #IS THERE A MORE CONCISE WAY TO DO THIS?
+        """
+        Displays moving leaves at intervals in the range of the correct background. Takes other
+        instances of bee obstacle class to get several differnt obstacles.
+        """
         randomspeed = random.randint(5,15)
         if current_number_of_scoops > 30:
             self.move_obstacle(0,randomspeed, display_width, display_height)

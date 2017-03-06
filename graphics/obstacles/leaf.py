@@ -24,11 +24,11 @@ class Leaf(Obstacle):
         screen.blit(self.image, (self.x_pos,self.y_pos))  #The input tuble is the location in x and y respectivly 
 
     def display_moving_leaves(self, self2, self3, self4, current_number_of_scoops, display_width, display_height, screen):
-    """
-    Displays moving leaves at intervals in teh range of the correct background. Takes other
-    instances of leaf obstacle class to get several differnt obstacles.
-    
-    """
+        """
+        Displays moving leaves at intervals in teh range of the correct background. Takes other
+        instances of leaf obstacle class to get several differnt obstacles.
+
+        """
         randomspeed = random.randint(5,15)
         if current_number_of_scoops < 20:
             self.move_obstacle(0,randomspeed,display_width, display_height)

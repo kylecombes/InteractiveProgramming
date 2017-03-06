@@ -29,10 +29,15 @@ class IceCreamCone(Graphic):
 
         self.cone_img, self.rect = load_image(os.path.join('assets', 'img', 'cone.png'))
 
-    def move(self, dx, dy):
+    def move(self, dx, dy, loc = False):
         # Move each sprite in our group
+        locations = [] # makes an empty list for storing locations
         for sprite in self.sprite_group.sprites():
             sprite.rect.move_ip(dx, dy)
+            locations.append((sprite.rect.x, sprite.rect.y))
+        if loc == True: ##If you want the location returned, a set the last parameter to True
+            return locations[-1] #returns a tuple of the x and y location of the top  left cornor of the sprite group
+        
 
     def add_scoop(self, scoop):
         """ Adds a scoop to the top of the stack on the cone.
