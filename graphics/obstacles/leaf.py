@@ -28,8 +28,16 @@ class Leaf(Obstacle):
         Displays moving leaves at intervals in teh range of the correct background. Takes other
         instances of leaf obstacle class to get several differnt obstacles.
 
+        self2-self4: sequence of instances of obstacle
+        current_number_of_scoops: num of scoops to gauge when to draw obstacles
+        display_width: screen x size
+        display_height: screen y size
+        screen: screen to draw on
         """
         randomspeed = random.randint(5,15)
+        #the following statements checks for number of scoops to tell when to shoot obstacles
+        #each move function takes an x direction speed (ususally 0) and a y direction seed
+        # the display width and display height as also needed to move the obstacles
         if current_number_of_scoops < 20:
             self.move_obstacle(0,randomspeed,display_width, display_height)
             self.draw(screen)
@@ -45,22 +53,31 @@ class Leaf(Obstacle):
         if current_number_of_scoops > 30:
             pass
 
+        """
+        KEY FOR NUMBER OF SCOOPS AND OBSTACLES:
+        Number of Scoops: Obstacle in that range
+        0-30: leaves
+        30-50: bee
+        50-80: drones
+        80-110: ballons
+        110-223: asteroids
+        """
+
     def move_obstacle(self, speed_x, speed_y, display_width, display_height):
         """
         Take an object and a speed as a paramter and maves it move through the screen. 
-
         The speed is how many pixels it moves each loop though, 10 is a good number to start with.
 
+        speed_x: speed in x position
+        speed_y: speed in y position
+        display_width: screen x size
+        display_height: screen y size
         """
         self.x_pos += speed_x
         self.y_pos += speed_y
         if self.x_pos > display_width: 
             self.x_pos = display_width + 100
+            #checks if obstacle is out of screen and stops it from moving
+            #100 is how much over the edge of the screen it needs to be to stop moving
         if self.y_pos > display_height:
             self.y_pos = display_height + 100
-
-        #TODO ADD move to main loop
-
-    def update_state(self, dt):
-        # TODO Update the location of the asteroid
-        pass
