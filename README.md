@@ -7,7 +7,7 @@ This game was created for [Mini Project 4 - Interactive Programming](https://sd1
 TO PLAY: run python3 IceCreamGame.py
 
 Link to Reflection document (also located in PDF on repo): 
-#/home/allison/InteractiveProgramming/Link to ReflectionSummary(1).pdf
+/home/allison/InteractiveProgramming/Link to ReflectionSummary(1).pdf
 
 
 
