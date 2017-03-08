@@ -4,6 +4,7 @@ from graphics.obstacles.leaf import Leaf
 from graphics.obstacles.Drone import Drone
 from graphics.obstacles.Ballon import Ballon
 from graphics.obstacles.Bee import Bee
+from graphics.scoop import Scoop
 import random
 
 def pick_random_place(display_width):
@@ -46,3 +47,13 @@ def make_bees(display_width):
 	bee3 = Bee(pick_random_place(display_width), 0)
 	bee4 = Bee(pick_random_place(display_width), 0)
 	return bee1, bee2, bee3, bee4
+
+def make_scoops(display_width):
+	scoop1 = Scoop(0,0,0.5) 
+	scoop2 = Scoop(0,0,0.5)
+	scoop3 = Scoop(0,0,0.5)
+	scoop4 = Scoop(0,0,0.5)
+	scoop5 = Scoop(0,0,0.5)
+	scoop6 = Scoop(0,0,0.5)
+	scoop7 = Scoop(0,0,0.5)
+	return scoop1, scoop2, scoop3, scoop4, scoop5, scoop6, scoop7

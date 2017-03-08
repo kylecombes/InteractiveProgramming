@@ -5,7 +5,7 @@ import time
 import random
 
 #imports graphic classes
-from graphics.ice_cream_cone import IceCreamCone
+from graphics.ice_cream_cone import *
 from graphics.background import Background
 from graphics.scoop import Scoop
 
@@ -64,19 +64,57 @@ bee1, bee2, bee3, bee4 = make_bees(display_width)
 drone1, drone2, drone3, drone4 = make_drones(display_width)
 ballon1, ballon2, ballon3, ballon4 = make_ballons(display_width)
 asteroid1, asteroid2, asteroid3, asteroid4, asteroid5, asteroid6 = make_asteroids(display_width)
+scoop1, scoop2, scoop3, scoop4, scoop5, scoop6, scoop7 = make_scoops(display_width)
+
+def check_for_scoop_collision():
+	list_of_falling_scoops = [scoop1, scoop2, scoop3, scoop4, scoop5, scoop6, scoop7]
+	for sco in list_of_falling_scoops:
+		scoop_cone_pos = cone.move(0,0,True) #location of cone's top scoop
+		scoop_y_span = range(sco.y_pos-100, sco.y_pos+10) #y spand of falling scoop
+		scoop_x_span = range(sco.x_pos-10, sco.x_pos+110) #x span of falling scoop
+		cone_x_span = range(scoop_cone_pos[0]-10, scoop_cone_pos[0]+100 ) #x span of cone location
+		cone_y_span = range(scoop_cone_pos[1]-10, scoop_cone_pos[1]+100 )#y span of cone locaitons
+		#sets X and Y to False initally
+		X_collision = False
+		Y_collision = False
+		#the following line checks that length of the list of elements are are in both the obs span and the scoop span
+		#if the length is greater than 0, then there is a collision
+		if len(list(set(scoop_x_span) & set(cone_x_span))) > 0: 
+			X_collision = True
+			
+		#checks the scoops's y position for the range of the obstacle's y
+		if len(list(set(scoop_y_span) & set(cone_y_span))) > 0: 
+			Y_collision = True
+
+		randomplace = random.randint(0,display_width)
+		#only exits the game if there is a collision in x and y
+		if X_collision and Y_collision:
+			for i in range(0,30):
+				message_to_screen("+1", green, 100,100) #send you lose message to user
+			pygame.display.update()
+			cone.add_scoop(Scoop(0, 0, 0.5,sco.color ))
+			sco.x_pos = randomplace
+			sco.y_pos = 0
+			adj_height = scoop_height
+			cone.move(0, adj_height)
 
 # game loop
 while not game_exit:
+	check_for_scoop_collision()
+	#
 	for event in pygame.event.get():  # getting the events
 		#running through events and effects of keyboard inputs
 		if event.type == pygame.QUIT:
 			game_exit = True
+		#if Catch_check == True:
+		#	cone.add_scoop(Scoop(0, 0, 0.5))
 		if event.type == pygame.KEYDOWN:
 			if event.key == pygame.K_LEFT:
 				cone.move(-CONE_MOVE_INCREMENT, 0)
 			elif event.key == pygame.K_RIGHT:
 				cone.move(CONE_MOVE_INCREMENT, 0)
 			elif event.key == pygame.K_SPACE:
+				#pass
 				cone.add_scoop(Scoop(0, 0, 0.5))
 				if len(cone.scoops)>= scoops_before_change:
 					cone.move(0, scoop_height) #makes the cone move down if the screen is moving up
@@ -84,8 +122,8 @@ while not game_exit:
 				game_exit = True
 
 	# making the background
-	change_in_y = 20 #reference for how fast the background changes
-	scoops_before_change = 5 #reference for how many scoops the background stays the same before starting to move
+	change_in_y = 40 #reference for how fast the background changes
+	scoops_before_change = 4 #reference for how many scoops the background stays the same before starting to move
 	current_number_of_scoops = len(cone.scoops) #reference for number of scoops to gauge background
 
 	#This background function is one gaint picture that goes form the ground to space.
@@ -122,9 +160,14 @@ while not game_exit:
 	ballon1.display_moving_ballons(ballon2, ballon3, ballon4, current_number_of_scoops, display_width, display_height, screen)
 	asteroid1.display_moving_asteroids(asteroid2, asteroid3, asteroid4, asteroid5, asteroid6, current_number_of_scoops, display_width, display_height, screen)
 
+	scoop1.display_moving_scoops(scoop2, scoop3, scoop4, scoop5, scoop6, scoop7, current_number_of_scoops, display_width, display_height, screen)
 	#list of obstacles for reference for collision handeling 
 	list_of_obstacles = [leaf1, leaf2, leaf3, leaf4, bee1, bee2, bee3, bee4, drone1, drone2, drone3, drone4, ballon1, ballon2, ballon3, ballon4, asteroid1, asteroid2, asteroid3, asteroid4, asteroid5, asteroid6]
 	
+
+
+
+
 	#Collision Handeling
 	for obs in list_of_obstacles: #running through all obstacles
 		#gives a tuple of the x and y location of the top  left cornor of the sprite group
@@ -161,6 +204,7 @@ while not game_exit:
 
 	"Drawing Cone"
 	cone.draw(screen)
+
 
 	pygame.display.update()  # updates the screen (for every run through the loop)
 
