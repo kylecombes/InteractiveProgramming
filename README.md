@@ -7,8 +7,9 @@ This game was created for [Mini Project 4 - Interactive Programming](https://sd1
 #### To Play
 Run **python3 IceCreamGame.py**. Note: the pygame library must be installed.
 
-Link to Reflection document (also located in PDF on repo): 
-/home/allison/InteractiveProgramming/Link to ReflectionSummary(1).pdf
+#### Reflection
+
+Our reflection and summary can be found [here](ReflectionSummary.pdf).
 
 
 
