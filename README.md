@@ -4,7 +4,8 @@ In Cloudy with a Chance of Ice Cream, you catch falling ice cream scoops while a
 
 This game was created for [Mini Project 4 - Interactive Programming](https://sd17spring.github.io//assignments/mini-project-4-interactive-visualization/) of Software Design at [Olin College of Engineering](http://olin.edu/).
 
-TO PLAY: run python3 IceCreamGame.py
+#### To Play
+Run **python3 IceCreamGame.py**. Note: the pygame library must be installed.
 
 Link to Reflection document (also located in PDF on repo): 
 /home/allison/InteractiveProgramming/Link to ReflectionSummary(1).pdf
