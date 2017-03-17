@@ -23,7 +23,7 @@ class Bee(Obstacle):
         """ Draws the Obstacles """
         screen.blit(self.image, (self.x_pos,self.y_pos))  #The input tuble is the location in x and y respectivly 
 
-    def display_moving_bees(self, self2, self3, self4, current_number_of_scoops, display_width, display_height, screen):
+    def display_moving_bees(self, bees, current_number_of_scoops, display_width, display_height, screen):
         """
         Displays moving leaves at intervals in the range of the correct background. Takes other
         instances of bee obstacle class to get several differnt obstacles.
@@ -42,14 +42,14 @@ class Bee(Obstacle):
             self.move_obstacle(0,randomspeed, display_width, display_height)
             self.draw(screen)
         if current_number_of_scoops > 33:
-            self2.move_obstacle(1,randomspeed,display_width, display_height)
-            self2.draw(screen)
+            bees[1].move_obstacle(1,randomspeed,display_width, display_height)
+            bees[1].draw(screen)
         if current_number_of_scoops >40:
-            self3.move_obstacle(2,randomspeed,display_width, display_height)
-            self3.draw(screen)
+            bees[2].move_obstacle(2,randomspeed,display_width, display_height)
+            bees[2].draw(screen)
         if current_number_of_scoops > 45:
-            self4.move_obstacle(0,randomspeed,display_width, display_height)
-            self4.draw(screen)
+            bees[3].move_obstacle(0,randomspeed,display_width, display_height)
+            bees[3].draw(screen)
         if current_number_of_scoops > 50:
             pass
 

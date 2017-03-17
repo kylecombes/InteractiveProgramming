@@ -1,5 +1,6 @@
 from graphics.graphic import Graphic
 from helpers import *
+import math
 
 
 class IceCreamCone(Graphic):
@@ -17,6 +18,8 @@ class IceCreamCone(Graphic):
         Graphic.__init__(self)
         self.x_pos = x_pos
         self.y_pos = y_pos
+        self.x_velocity = 0
+        self.y_velocity = 0
         # Create a new sprite group to handle drawing all our sprites
         self.sprite_group = pygame.sprite.OrderedUpdates()
         # Create a new empty cone and add it to our sprite group
@@ -28,21 +31,36 @@ class IceCreamCone(Graphic):
         self.cone_img, self.rect = load_image(os.path.join('assets', 'img', 'cone.png'))
         # making the cone from the cone image
 
-    def move(self, dx, dy, loc = False):
-        """
-        moves the sprite group of cone and scoops by dx and dy
+    # def move(self, dx, dy, loc = False):
+    #     """
+    #     moves the sprite group of cone and scoops by dx and dy
+    #
+    #     dx: change in x position
+    #     dy: change in y position
+    #     loc: if you want the location returned as a tuple or not
+    #     """
 
-        dx: change in x position
-        dy: change in y position
-        loc: if you want the location returned as a tuple or not
+    def accelerate(self, ax, ay, dt, max_speed):
+        """ Accelerate the cone and its contents in the corresponding direction
+
+            :param ax: the acceleration component in the x-direction
+            :param ay: the acceleration component in the y-direction
+            :param dt: the amount of time for which to accelerate the cone
         """
-        locations = [] # makes an empty list for storing locations
+        self.x_velocity += ax * dt
+        if math.fabs(self.x_velocity) > max_speed:
+            self.x_velocity = max_speed * (self.x_velocity / math.fabs(self.x_velocity))
+        locations = [(s.rect.x, s.rect.y) for s in self.sprite_group.sprites()]
+        return locations[-1]  # returns a tuple of the x and y location of the top  left cornor of the sprite group
+
+    def update_state(self, dt):
+        """ Update the state (position, etc.) of the cone given a period of elapsed time
+        :param dt: the amount of time elapsed since the last update_state call
+        """
+        dx = math.ceil(self.x_velocity*dt)
         for sprite in self.sprite_group.sprites(): # Move each sprite in our group
-            sprite.rect.move_ip(dx, dy) #moves sprite
-            locations.append((sprite.rect.x, sprite.rect.y)) #adds location to list
-        if loc == True: #If you want the location returned, a set the last parameter to True
-            return locations[-1] #returns a tuple of the x and y location of the top  left cornor of the sprite group
-        
+            sprite.rect.move_ip(dx, 0)
+
 
     def add_scoop(self, scoop):
         """ 
@@ -57,10 +75,14 @@ class IceCreamCone(Graphic):
         # ----- Position the scoop correctly -----
         # Center the scoop over the cone
         scoop.rect.centerx = self.cone.rect.centerx
-        # Put it on top and arranging it correctly
+        # Determine where the scoop should be placed such that it sits atop the stack
         scoop_count = len(self.scoops)
         effective_scoop_height = scoop.rect.height - self.SCOOP_SCOOP_OFFSET
         offset_from_cone_bottom = scoop_count*effective_scoop_height + self.cone.rect.height - self.SCOOP_CONE_OFFSET
+        # Shift all the scoops and cone down
+        for item in self.sprite_group.sprites():
+            item.rect.move_ip(0, effective_scoop_height)
+        # Put the scoop on top
         scoop.rect.bottom = self.cone.rect.bottom - offset_from_cone_bottom
 
         #adds to sprite group and appends to scoops object

@@ -22,7 +22,7 @@ class Drone(Obstacle):
         """ Draws the Obstacles """
         screen.blit(self.image, (self.x_pos,self.y_pos))  #The input tuble is the location in x and y respectivly 
 
-    def display_moving_drones(self, self2, self3, self4, current_number_of_scoops, display_width, display_height, screen):
+    def display_moving_drones(self, drones, current_number_of_scoops, display_width, display_height, screen):
         """
         Displays moving leaves at intervals in the range of the correct background. Takes other
         instances of drone obstacle class to get several differnt obstacles.
@@ -41,14 +41,14 @@ class Drone(Obstacle):
             self.move_obstacle(0,randomspeed, display_width, display_height)
             self.draw(screen)
         if current_number_of_scoops > 53:
-            self2.move_obstacle(1,randomspeed,display_width, display_height)
-            self2.draw(screen)
+            drones[1].move_obstacle(1,randomspeed,display_width, display_height)
+            drones[1].draw(screen)
         if current_number_of_scoops >65:
-            self3.move_obstacle(5,randomspeed,display_width, display_height)
-            self3.draw(screen)
+            drones[2].move_obstacle(5,randomspeed,display_width, display_height)
+            drones[2].draw(screen)
         if current_number_of_scoops > 73:
-            self4.move_obstacle(0,randomspeed,display_width, display_height)
-            self4.draw(screen)
+            drones[3].move_obstacle(0,randomspeed,display_width, display_height)
+            drones[3].draw(screen)
         if current_number_of_scoops > 80:
             pass
 

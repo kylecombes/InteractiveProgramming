@@ -22,7 +22,7 @@ class Asteroid(Obstacle):
         """ Draws the Obstacles """
         screen.blit(self.image, (self.x_pos,self.y_pos))  #The input tuble is the location in x and y respectivly 
 
-    def display_moving_asteroids(self, self2, self3, self4, self5, self6, current_number_of_scoops, display_width, display_height, screen):
+    def display_moving_asteroids(self, asteroids, current_number_of_scoops, display_width, display_height, screen):
         """
         Displays moving leaves at intervals in the range of the correct background. Takes other
         instances of asteroid obstacle class to get several differnt obstacles.
@@ -41,20 +41,20 @@ class Asteroid(Obstacle):
             self.move_obstacle(0,randomspeed,display_width, display_height)
             self.draw(screen)
         if current_number_of_scoops > 125:
-            self2.move_obstacle(0,randomspeed,display_width, display_height)
-            self2.draw(screen)
+            asteroids[1].move_obstacle(0,randomspeed,display_width, display_height)
+            asteroids[1].draw(screen)
         if current_number_of_scoops >136:
-            self3.move_obstacle(0,randomspeed,display_width, display_height)
-            self3.draw(screen)
+            asteroids[2].move_obstacle(0,randomspeed,display_width, display_height)
+            asteroids[2].draw(screen)
         if current_number_of_scoops > 147:
-            self4.move_obstacle(4,randomspeed,display_width, display_height)
-            self4.draw(screen)
+            asteroids[3].move_obstacle(4,randomspeed,display_width, display_height)
+            asteroids[3].draw(screen)
         if current_number_of_scoops > 160:
-            self5.move_obstacle(5,randomspeed,display_width, display_height)
-            self5.draw(screen)
+            asteroids[4].move_obstacle(5,randomspeed,display_width, display_height)
+            asteroids[4].draw(screen)
         if current_number_of_scoops > 175:
-            self6.move_obstacle(0,randomspeed,display_width, display_height)
-            self6.draw(screen)
+            asteroids[5].move_obstacle(0,randomspeed,display_width, display_height)
+            asteroids[5].draw(screen)
 
 
         """

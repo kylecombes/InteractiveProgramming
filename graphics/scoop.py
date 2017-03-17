@@ -41,10 +41,10 @@ class Scoop(Graphic):
 
 
 
-    def display_moving_scoops(self, self2, self3, self4, self5, self6, self7, current_number_of_scoops, display_width, display_height, screen):
+    def display_moving_scoops(self, scoops, current_number_of_scoops, display_width, display_height, screen):
         """
         Displays moving leaves at intervals in the range of the correct background. Takes other
-        instances of drone obstacle class to get several differnt obstacles.
+        instances of drone obstacle class to get several different obstacles.
 
         self2-self4: sequence of instances of obstacle
         current_number_of_scoops: num of scoops to gauge when to draw obstacles
@@ -76,17 +76,17 @@ class Scoop(Graphic):
         if current_number_of_scoops >= 0:
             move_format(self)
         if current_number_of_scoops > 5:
-            move_format(self6)
+            move_format(scoops[5])
         if current_number_of_scoops >10: 
-            move_format(self3)
+            move_format(scoops[2])
         if current_number_of_scoops > 20:
-            move_format(self4)
+            move_format(scoops[3])
         if current_number_of_scoops > 25:
-            move_format(self5)
+            move_format(scoops[4])
         if current_number_of_scoops > 30:
-            move_format(self7)
+            move_format(scoops[6])
         if current_number_of_scoops > 35:
-            move_format(self2)
+            move_format(scoops[1])
 
         """
         KEY FOR NUMBER OF SCOOPS AND OBSTACLES:

@@ -12,203 +12,227 @@ from graphics.scoop import Scoop
 #imports all obstacle making instances from making obstacles file
 from making_obstacles import * 
 
-pygame.init() #initalized all imported pygame modules
- 
-#making colors
-white = (255,255,255)
-black = (0,0,0)
-red = (255,0,0)
-green = (0,255,0)
-blue = (0,0,255)
 
-CONE_MOVE_INCREMENT = 20  # pixels
+class IceCreamGame:
 
-font = pygame.font.SysFont(None, 50) #font for messages
+    # ----- Constants -----
+    
+    # Colors
+    WHITE = (255, 255, 255)
+    BLACK = (0, 0, 0)
+    RED = (255, 0, 0)
+    BLUE = (0, 0, 255)
 
-display_height = 600  # size of screen
-display_width = 700  # size of screen
+    CONE_ACCELERATION = 4000  # pixels/second^2
+    MAX_CONE_SPEED = 500  # pixels/second
 
-FPS = 20  # frames per second
+    SCOOP_HEIGHT = 51  # height of ice cream scoop (px)
+    WINDOW_HEIGHT = 600  # size of screen (px)
+    WINDOW_WIDTH = 700  # size of screen (px)
+    WINDOW_TITLE = 'The Best Ice Cream Game Known to Man'
 
-#surface that will be updated
-screen = pygame.display.set_mode((display_width, display_height))  # input is tuple of screen size
+    FPS = 30  # frames per second
 
-pygame.display.set_caption('The Best Ice Cream Game Known to Man') # Caption for main screen
-pygame.key.set_repeat(50, 20)
+    def __init__(self):
+        pygame.init()  # initialize all imported pygame modules
 
-def message_to_screen(msg, color, xcord, ycord ):  
-	"""
-	Making a message to user function
+        self.FONT = pygame.font.SysFont(None, 50)  # font for messages
 
-	msg: string you want to send as a message
-	color: color of words for message
-	xcord: x cordinate you want to place message
-	ycord: y cordinate you want to place message
-	"""
-	screen_text = font.render(msg, True, color)
-	screen.blit(screen_text, [xcord,ycord])
+        #surface that will be updated
+        self.screen = pygame.display.set_mode((self.WINDOW_WIDTH, self.WINDOW_HEIGHT))  # input is tuple of screen size
+        
+        pygame.display.set_caption(self.WINDOW_TITLE)  # Caption for main screen
+        pygame.key.set_repeat(30, 20)
 
-game_exit = False #When this equals True, the game loop stops
+        self.clock = pygame.time.Clock()  # set frame rate
 
-clock = pygame.time.Clock()  # setting up frames per second
-scoop_height = 51 #seeting scoop height for collision reference
+        self.score = 0
 
-"""Making Cone and Obstacles"""
+    
+        """Make Cone and Obstacles"""
 
-# parameters are scale, xpos, ypos NOTICE: SCALE does not work yet
-cone = IceCreamCone(10, 400, 600)
+        # parameters are scale, xpos, ypos NOTICE: SCALE does not work yet
+        self.cone = IceCreamCone(10, 400, 600)
 
-#making obstacle instances. Calls the function 'making_obstacles' which returns a tuple of all the instances of each obstacle 
-leaf1, leaf2, leaf3, leaf4 = make_leaves(display_width)
-bee1, bee2, bee3, bee4 = make_bees(display_width)
-drone1, drone2, drone3, drone4 = make_drones(display_width)
-ballon1, ballon2, ballon3, ballon4 = make_ballons(display_width)
-asteroid1, asteroid2, asteroid3, asteroid4, asteroid5, asteroid6 = make_asteroids(display_width)
-scoop1, scoop2, scoop3, scoop4, scoop5, scoop6, scoop7 = make_scoops(display_width)
+        #making obstacle instances. Calls the function 'making_obstacles' which returns a tuple of all the instances of each obstacle
+        self.leaves = make_leaves(self.WINDOW_WIDTH)
+        self.bees = make_bees(self.WINDOW_WIDTH)
+        self.drones = make_drones(self.WINDOW_WIDTH)
+        self.balloons = make_balloons(self.WINDOW_WIDTH)
+        self.asteroids = make_asteroids(self.WINDOW_WIDTH)
+        self.all_obstacles = []
+        self.all_obstacles.extend(self.leaves)
+        self.all_obstacles.extend(self.bees)
+        self.all_obstacles.extend(self.drones)
+        self.all_obstacles.extend(self.balloons)
+        self.all_obstacles.extend(self.asteroids)
+        self.scoops = make_scoops()
 
-def check_for_scoop_collision():
-	list_of_falling_scoops = [scoop1, scoop2, scoop3, scoop4, scoop5, scoop6, scoop7]
-	for sco in list_of_falling_scoops:
-		scoop_cone_pos = cone.move(0,0,True) #location of cone's top scoop
-		scoop_y_span = range(sco.y_pos-100, sco.y_pos+10) #y spand of falling scoop
-		scoop_x_span = range(sco.x_pos-10, sco.x_pos+110) #x span of falling scoop
-		cone_x_span = range(scoop_cone_pos[0]-10, scoop_cone_pos[0]+100 ) #x span of cone location
-		cone_y_span = range(scoop_cone_pos[1]-10, scoop_cone_pos[1]+100 )#y span of cone locaitons
-		#sets X and Y to False initally
-		X_collision = False
-		Y_collision = False
-		#the following line checks that length of the list of elements are are in both the obs span and the scoop span
-		#if the length is greater than 0, then there is a collision
-		if len(list(set(scoop_x_span) & set(cone_x_span))) > 0: 
-			X_collision = True
-			
-		#checks the scoops's y position for the range of the obstacle's y
-		if len(list(set(scoop_y_span) & set(cone_y_span))) > 0: 
-			Y_collision = True
+    def message_to_screen(self, msg, c, font, screen, x, y):
+        """
+        Making a message to user function
 
-		randomplace = random.randint(0,display_width)
-		#only exits the game if there is a collision in x and y
-		if X_collision and Y_collision:
-			for i in range(0,30):
-				message_to_screen("+1", green, 100,100) #send you lose message to user
-			pygame.display.update()
-			cone.add_scoop(Scoop(0, 0, 0.5,sco.color ))
-			sco.x_pos = randomplace
-			sco.y_pos = 0
-			adj_height = scoop_height
-			cone.move(0, adj_height)
+        :param msg: string you want to send as a message
+        :param c: color of words for message
+        :param font: pygame font to use
+        :param screen: pygame screen to draw on
+        :param x: x-coordinate you want to place message
+        :param y: y-coordinate you want to place message
+        """
+        screen_text = font.render(msg, True, c)
+        screen.blit(screen_text, [x, y])
 
-# game loop
-while not game_exit:
-	check_for_scoop_collision()
-	#
-	for event in pygame.event.get():  # getting the events
-		#running through events and effects of keyboard inputs
-		if event.type == pygame.QUIT:
-			game_exit = True
-		#if Catch_check == True:
-		#	cone.add_scoop(Scoop(0, 0, 0.5))
-		if event.type == pygame.KEYDOWN:
-			if event.key == pygame.K_LEFT:
-				cone.move(-CONE_MOVE_INCREMENT, 0)
-			elif event.key == pygame.K_RIGHT:
-				cone.move(CONE_MOVE_INCREMENT, 0)
-			elif event.key == pygame.K_SPACE:
-				#pass
-				cone.add_scoop(Scoop(0, 0, 0.5))
-				if len(cone.scoops)>= scoops_before_change:
-					cone.move(0, scoop_height) #makes the cone move down if the screen is moving up
-			elif event.key == pygame.K_q:
-				game_exit = True
+    def check_for_scoop_collision(self):
 
-	# making the background
-	change_in_y = 40 #reference for how fast the background changes
-	scoops_before_change = 4 #reference for how many scoops the background stays the same before starting to move
-	current_number_of_scoops = len(cone.scoops) #reference for number of scoops to gauge background
+        for scoop in self.scoops:
+            scoop_cone_pos = self.cone.accelerate(0,0,1/self.FPS, self.MAX_CONE_SPEED) #location of cone's top scoop
+            scoop_y_span = range(scoop.y_pos-100, scoop.y_pos+10) #y span of falling scoop
+            scoop_x_span = range(scoop.x_pos-10, scoop.x_pos+110) #x span of falling scoop
+            cone_x_span = range(scoop_cone_pos[0]-10, scoop_cone_pos[0]+100 ) #x span of cone location
+            cone_y_span = range(scoop_cone_pos[1]-10, scoop_cone_pos[1]+100 )#y span of cone locaitons
+            #sets X and Y to False initially
+            x_collision = False
+            y_collision = False
+            #the following line checks that length of the list of elements are are in both the obs span and the scoop span
+            #if the length is greater than 0, then there is a collision
+            if len(list(set(scoop_x_span) & set(cone_x_span))) > 0: 
+                x_collision = True
+                
+            #checks the scoops's y position for the range of the obstacle's y
+            if len(list(set(scoop_y_span) & set(cone_y_span))) > 0: 
+                y_collision = True
+    
+            randomplace = random.randint(0,self.WINDOW_WIDTH)
+            #only exits the game if there is a collision in x and y
+            if x_collision and y_collision:
+                self.score += 1
+                pygame.display.update()
+                self.cone.add_scoop(Scoop(0, 0, 0.5, scoop.color))
+                scoop.x_pos = randomplace
+                scoop.y_pos = 0
+                adj_height = self.SCOOP_HEIGHT
+                self.cone.move(0, adj_height)
+    
+    def launch_game(self):
+        """ Runs the game loop until the game ends
 
-	#This background function is one gaint picture that goes form the ground to space.
-	#The x compoent of the parameters and stays constant. The y compoent changes. At y = 0, it is the highest point in the picture
-	#The lowest y value is 4400
+            :return 0 if the window should stay open until the user closes it, or -1 if the window should be closed immediately
+        """
+        while True:
+            self.check_for_scoop_collision()
 
-	if current_number_of_scoops <= scoops_before_change: #if you have not reached x number of scoops, background stays the same
-		background_y = -4400 #leaves background at bottom
-	else: #if you get past the inital value of scoops
-		new_y = (current_number_of_scoops-3)*change_in_y #correct ratio for changing background
-		background_y = -4400 + new_y #changing background
+            for event in pygame.event.get():  # getting the events
+                #running through events and effects of keyboard inputs
+                if event.type == pygame.QUIT:
+                    return -1  # Exit immediately
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_LEFT:
+                        self.cone.accelerate(-self.CONE_ACCELERATION, 0, 1 / self.FPS, self.MAX_CONE_SPEED)
+                    elif event.key == pygame.K_RIGHT:
+                        self.cone.accelerate(self.CONE_ACCELERATION, 0, 1 / self.FPS, self.MAX_CONE_SPEED)
+                    elif event.key == pygame.K_q:
+                        return -1  # Exit immediately
 
-	if background_y > 0:
-		background_y = 0  #remember 0 is the top of the screen, so if it is 0, then you reached the end of the picture
-		backgroundFull = Background(os.path.join('assets', 'img', 'fullbackground.jpg'), [-11, background_y])
-		screen.blit(backgroundFull.image, backgroundFull.rect) 
-		message_to_screen("You Win!", white, display_width/2,display_height/2) #giving message
-		pygame.display.update()
-		time.sleep(2)
-		game_exit = True #stops game loop
-		quit() #exits game screen
+            self.cone.update_state(1/self.FPS)
 
-	#full background image
-	backgroundFull = Background(os.path.join('assets', 'img', 'fullbackground.jpg'), [-11, background_y])
-	screen.blit(backgroundFull.image, backgroundFull.rect)
+            # making the background
+            change_in_y = 40 #reference for how fast the background changes
+            scoops_before_change = 4 #reference for how many scoops the background stays the same before starting to move
+            current_number_of_scoops = len(self.cone.scoops) #reference for number of scoops to gauge background
 
+            #This background function is one gaint picture that goes form the ground to space.
+            #The x component of the parameters and stays constant. The y compoent changes. At y = 0, it is the highest point in the picture
+            #The lowest y value is 4400
 
-	"""Moveing Obstacles at various locations in sky, each obstacle calls its own function"""
+            if current_number_of_scoops <= scoops_before_change: #if you have not reached x number of scoops, background stays the same
+                background_y = -4400 #leaves background at bottom
+            else: #if you get past the inital value of scoops
+                new_y = (current_number_of_scoops-3)*change_in_y #correct ratio for changing background
+                background_y = -4400 + new_y #changing background
 
+            if background_y > 0:
+                background_y = 0  #remember 0 is the top of the screen, so if it is 0, then you reached the end of the picture
+                background_full = Background(os.path.join('assets', 'img', 'fullbackground.jpg'), [-11, background_y])
+                self.screen.blit(background_full.image, background_full.rect)
+                self.message_to_screen("You Win!", self.WHITE, self.FONT, self.screen, self.WINDOW_WIDTH/2, self.WINDOW_HEIGHT/2)
+                pygame.display.update()
+                time.sleep(2)
+                return 0  # Wait for user to exit
 
-	leaf1.display_moving_leaves(leaf2, leaf3, leaf4, current_number_of_scoops, display_width, display_height, screen)
-	bee1.display_moving_bees(bee2, bee3, bee4, current_number_of_scoops, display_width, display_height, screen)
-	drone1.display_moving_drones(drone2, drone3, drone4, current_number_of_scoops, display_width, display_height, screen)
-	ballon1.display_moving_ballons(ballon2, ballon3, ballon4, current_number_of_scoops, display_width, display_height, screen)
-	asteroid1.display_moving_asteroids(asteroid2, asteroid3, asteroid4, asteroid5, asteroid6, current_number_of_scoops, display_width, display_height, screen)
-
-	scoop1.display_moving_scoops(scoop2, scoop3, scoop4, scoop5, scoop6, scoop7, current_number_of_scoops, display_width, display_height, screen)
-	#list of obstacles for reference for collision handeling 
-	list_of_obstacles = [leaf1, leaf2, leaf3, leaf4, bee1, bee2, bee3, bee4, drone1, drone2, drone3, drone4, ballon1, ballon2, ballon3, ballon4, asteroid1, asteroid2, asteroid3, asteroid4, asteroid5, asteroid6]
-	
+            #full background image
+            background_full = Background(os.path.join('assets', 'img', 'fullbackground.jpg'), [-11, background_y])
+            self.screen.blit(background_full.image, background_full.rect)
 
 
+            """Moving Obstacles at various locations in sky, each obstacle calls its own function"""
 
 
-	#Collision Handeling
-	for obs in list_of_obstacles: #running through all obstacles
-		#gives a tuple of the x and y location of the top  left cornor of the sprite group
-		scoop_cone_pos = cone.move(0,0,True) 
+            self.leaves[0].display_moving_leaves(self.leaves, current_number_of_scoops, self.WINDOW_WIDTH, self.WINDOW_HEIGHT,self.screen)
+            self.bees[0].display_moving_bees(self.bees, current_number_of_scoops, self.WINDOW_WIDTH, self.WINDOW_HEIGHT,self.screen)
+            self.drones[0].display_moving_drones(self.drones, current_number_of_scoops, self.WINDOW_WIDTH, self.WINDOW_HEIGHT,self.screen)
+            self.balloons[0].display_moving_ballons(self.balloons, current_number_of_scoops, self.WINDOW_WIDTH, self.WINDOW_HEIGHT,self.screen)
+            self.asteroids[0].display_moving_asteroids(self.asteroids, current_number_of_scoops, self.WINDOW_WIDTH, self.WINDOW_HEIGHT,self.screen)
 
-		#sets range of x values for each obstacle.
-		#obs = obstacle
-		#each obstacle is about 100 pixels long
-		obs_span = range(obs.x_pos, obs.x_pos+100) 
-
-		#sets top scoop's span, each is about 100 pixels long
-		scoopx_span = range(scoop_cone_pos[0], scoop_cone_pos[0]+100 )
-
-		#sets X and Y to False initally
-		X_collision = False
-		Y_collision = False
-
-		#the following line checks that length of the list of elements are are in both the obs span and the scoop span
-		#if the length is greater than 0, then there is a collision
-		if len(list(set(obs_span) & set(scoopx_span))) > 0: 
-			X_collision = True
-
-		#checks the scoops's y position for the range of the obstacle's y
-		if scoop_cone_pos[1] in range(obs.y_pos-10, obs.y_pos+ 10):
-			Y_collision = True
-
-		#only exits the game if there is a collision in x and y
-		if X_collision and Y_collision:
-			message_to_screen("You Lose!", red, display_width/2,display_height/2) #send you lose message to user
-			pygame.display.update() 
-			time.sleep(2)
-			game_exit = True
-			quit()
-
-	"Drawing Cone"
-	cone.draw(screen)
+            self.scoops[0].display_moving_scoops(self.scoops, current_number_of_scoops, self.WINDOW_WIDTH, self.WINDOW_HEIGHT,self.screen)
+            #list of obstacles for reference for collision handling
 
 
-	pygame.display.update()  # updates the screen (for every run through the loop)
+            #Collision Handling
+            for obs in self.all_obstacles:  # Run through all obstacles
+                #gives a tuple of the x and y location of the top  left corner of the sprite group
+                scoop_cone_pos = self.cone.accelerate(0, 0, 0, self.MAX_CONE_SPEED)
 
-	clock.tick(FPS)  # setting frames per second
+                #sets range of x values for each obstacle.
+                #obs = obstacle
+                #each obstacle is about 100 pixels long
+                obs_span = range(obs.x_pos, obs.x_pos+100)
 
-pygame.quit()  # uninitializes pygame
-quit()  # must have a quit
+                #sets top scoop's span, each is about 100 pixels long
+                scoopx_span = range(scoop_cone_pos[0], scoop_cone_pos[0]+100 )
+
+                #sets X and Y to False initially
+                x_collision = False
+                y_collision = False
+
+                #the following line checks that length of the list of elements are are in both tqhe obs span and the scoop span
+                #if the length is greater than 0, then there is a collision
+                if len(list(set(obs_span) & set(scoopx_span))) > 0:
+                    x_collision = True
+
+                #checks the scoops's y position for the range of the obstacle's y
+                if scoop_cone_pos[1] in range(obs.y_pos-10, obs.y_pos+ 10):
+                    y_collision = True
+
+                #only exits the game if there is a collision in x and y
+                if x_collision and y_collision:
+                    self.message_to_screen("You Lose!", self.RED, self.FONT, self.screen, self.WINDOW_WIDTH/2, self.WINDOW_HEIGHT/2)
+                    pygame.display.update()
+                    return 0  # Wait for user to exit
+
+            "Drawing Cone"
+            self.cone.draw(self.screen)
+
+            # Display score
+            self.message_to_screen('Score: %i' % self.score, self.BLUE, self.FONT, self.screen, 10, 10)
+
+            pygame.display.update()  # updates the screen (for every run through the loop)
+
+            self.clock.tick(self.FPS)  # setting frames per second
+
+
+    def wait_for_close(self):
+        """ Pause execution until the user clicks Close """
+        time.sleep(2)
+        while True:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    return
+
+
+if __name__ == '__main__':
+    game = IceCreamGame()
+    exit_code = game.launch_game()
+    if exit_code == 0:  # Player won or lost, wait to exit
+        game.wait_for_close()
+    pygame.quit()  # uninitializes pygame
+    quit()  # must have a quit

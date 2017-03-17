@@ -21,9 +21,9 @@ class Leaf(Obstacle):
 
     def draw(self, screen):
         """ Draws the Obstacles """
-        screen.blit(self.image, (self.x_pos,self.y_pos))  #The input tuble is the location in x and y respectivly 
+        screen.blit(self.image, (self.x_pos,self.y_pos))  # The input tuple is the location in x and y respectively
 
-    def display_moving_leaves(self, self2, self3, self4, current_number_of_scoops, display_width, display_height, screen):
+    def display_moving_leaves(self, leaves, current_number_of_scoops, display_width, display_height, screen):
         """
         Displays moving leaves at intervals in teh range of the correct background. Takes other
         instances of leaf obstacle class to get several differnt obstacles.
@@ -36,20 +36,20 @@ class Leaf(Obstacle):
         """
         randomspeed = random.randint(5,15)
         #the following statements checks for number of scoops to tell when to shoot obstacles
-        #each move function takes an x direction speed (ususally 0) and a y direction seed
+        #each move function takes an x direction speed (usually 0) and a y direction seed
         # the display width and display height as also needed to move the obstacles
         if current_number_of_scoops < 20:
             self.move_obstacle(0,randomspeed,display_width, display_height)
             self.draw(screen)
         if current_number_of_scoops > 10:
-            self2.move_obstacle(0,randomspeed,display_width, display_height)
-            self2.draw(screen)
-        if current_number_of_scoops >15:
-            self3.move_obstacle(0,randomspeed,display_width, display_height)
-            self3.draw(screen)
+            leaves[1].move_obstacle(0,randomspeed,display_width, display_height)
+            leaves[1].draw(screen)
+        if current_number_of_scoops > 15:
+            leaves[2].move_obstacle(0,randomspeed,display_width, display_height)
+            leaves[2].draw(screen)
         if current_number_of_scoops > 20:
-            self4.move_obstacle(0,randomspeed,display_width, display_height)
-            self4.draw(screen)
+            leaves[3].move_obstacle(0,randomspeed,display_width, display_height)
+            leaves[3].draw(screen)
         if current_number_of_scoops > 30:
             pass
 
@@ -59,7 +59,7 @@ class Leaf(Obstacle):
         0-30: leaves
         30-50: bee
         50-80: drones
-        80-110: ballons
+        80-110: balloons
         110-223: asteroids
         """
 
