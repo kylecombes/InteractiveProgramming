@@ -3,7 +3,8 @@ from helpers import *
 import random
 
 
-class Drone(Obstacle):
+
+class Bee(Obstacle):
 
     def __init__(self, x_pos, y_pos):
         """ Initializes a new Scoop object at the given position and scale.
@@ -13,7 +14,7 @@ class Drone(Obstacle):
             scale: int - scales the size of the scoop
         """
         Obstacle.__init__(self)
-        self.image, self.rect = load_image(os.path.join('assets', 'img', 'drone.png'), -1)
+        self.image, self.rect = load_image(os.path.join('assets', 'img', 'obstacles', 'bee.png'), -1)
 
         self.x_pos = x_pos
         self.y_pos = y_pos
@@ -22,11 +23,11 @@ class Drone(Obstacle):
         """ Draws the Obstacles """
         screen.blit(self.image, (self.x_pos,self.y_pos))  #The input tuble is the location in x and y respectivly 
 
-    def display_moving_drones(self, drones, current_number_of_scoops, display_width, display_height, screen):
+    def display_moving_bees(self, bees, current_number_of_scoops, display_width, display_height, screen):
         """
         Displays moving leaves at intervals in the range of the correct background. Takes other
-        instances of drone obstacle class to get several differnt obstacles.
-
+        instances of bee obstacle class to get several differnt obstacles.
+        
         self2-self4: sequence of instances of obstacle
         current_number_of_scoops: num of scoops to gauge when to draw obstacles
         display_width: screen x size
@@ -37,19 +38,19 @@ class Drone(Obstacle):
         #the following statements checks for number of scoops to tell when to shoot obstacles
         #each move function takes an x direction speed (ususally 0) and a y direction seed
         # the display width and display height as also needed to move the obstacles
-        if current_number_of_scoops > 50:
+        if current_number_of_scoops > 30:
             self.move_obstacle(0,randomspeed, display_width, display_height)
             self.draw(screen)
-        if current_number_of_scoops > 53:
-            drones[1].move_obstacle(1,randomspeed,display_width, display_height)
-            drones[1].draw(screen)
-        if current_number_of_scoops >65:
-            drones[2].move_obstacle(5,randomspeed,display_width, display_height)
-            drones[2].draw(screen)
-        if current_number_of_scoops > 73:
-            drones[3].move_obstacle(0,randomspeed,display_width, display_height)
-            drones[3].draw(screen)
-        if current_number_of_scoops > 80:
+        if current_number_of_scoops > 33:
+            bees[1].move_obstacle(1,randomspeed,display_width, display_height)
+            bees[1].draw(screen)
+        if current_number_of_scoops >40:
+            bees[2].move_obstacle(2,randomspeed,display_width, display_height)
+            bees[2].draw(screen)
+        if current_number_of_scoops > 45:
+            bees[3].move_obstacle(0,randomspeed,display_width, display_height)
+            bees[3].draw(screen)
+        if current_number_of_scoops > 50:
             pass
 
         """
@@ -80,4 +81,3 @@ class Drone(Obstacle):
             #100 is how much over the edge of the screen it needs to be to stop moving
         if self.y_pos > display_height:
             self.y_pos = display_height + 100
-

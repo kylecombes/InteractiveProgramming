@@ -3,7 +3,7 @@ from helpers import *
 import random
 
 
-class Ballon(Obstacle):
+class Balloon(Obstacle):
 
     def __init__(self, x_pos, y_pos):
         """ Initializes a new Scoop object at the given position and scale.
@@ -13,16 +13,16 @@ class Ballon(Obstacle):
             scale: int - scales the size of the scoop
         """
         Obstacle.__init__(self)
-        self.image, self.rect = load_image(os.path.join('assets', 'img', 'purpleballon.png'), -1)
+        self.image, self.rect = load_image(os.path.join('assets', 'img', 'obstacles', 'balloon.png'), -1)
 
-        self.x_pos = x_pos
-        self.y_pos = y_pos
+        self.rect.x = x_pos
+        self.rect.y = y_pos
 
     def draw(self, screen):
         """ Draws the Obstacles """
-        screen.blit(self.image, (self.x_pos,self.y_pos))  #The input tuble is the location in x and y respectivly 
+        screen.blit(self.image, (self.x_pos, self.y_pos))  # The input tuble is the location in x and y respectivly
 
-    def display_moving_ballons(self, balloons, current_number_of_scoops, display_width, display_height, screen):
+    def display_moving_balloons(self, balloons, current_number_of_scoops, display_width, display_height, screen):
         """
         Displays moving leaves at intervals in the range of the correct background. Takes other
         instances of ballon obstacle class to get several differnt obstacles.

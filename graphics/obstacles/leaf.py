@@ -14,7 +14,7 @@ class Leaf(Obstacle):
             scale: int - scales the size of the scoop
         """
         Obstacle.__init__(self)
-        self.image, self.rect = load_image(os.path.join('assets', 'img', 'leaf.png'), -1)
+        self.image, self.rect = load_image(os.path.join('assets', 'img', 'obstacles', 'leaf.png'), -1)
 
         self.x_pos = x_pos
         self.y_pos = y_pos

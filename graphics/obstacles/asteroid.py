@@ -13,7 +13,7 @@ class Asteroid(Obstacle):
             scale: int - scales the size of the scoop
         """
         Obstacle.__init__(self)
-        self.image, self.rect = load_image(os.path.join('assets', 'img', 'astroid.png'), -1)
+        self.image, self.rect = load_image(os.path.join('assets', 'img', 'obstacles', 'asteroid.png'), -1)
 
         self.x_pos = x_pos
         self.y_pos = y_pos
