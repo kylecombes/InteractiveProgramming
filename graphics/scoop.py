@@ -28,7 +28,10 @@ class Scoop(Graphic):
         self.rect.y = y_pos
 
     def draw(self, screen):
-        """ Draws the Obstacles """
+        """ Draws the scoop on the screen
+
+            :param screen: a pygame Surface to draw on
+         """
         screen.blit(self.image, (self.rect.x, self.rect.y))
 
     def move(self, delta_x, delta_y):

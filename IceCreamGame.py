@@ -1,4 +1,9 @@
-"""Ice Cream Game Code"""
+"""
+    Cloudy with a Chance of Ice Cream is a game in which the player tries to catch falling
+    ice cream scoops in a cone while avoiding falling obstacles. The player gradually
+    progresses through the atmosphere and into space. If they make it all the way to Mars
+    without running into an obstacle, they win.
+"""
 
 import time
 from graphics.ice_cream_cone import *
@@ -28,7 +33,6 @@ class IceCreamGame:
     CONE_DRAG_ACCELERATION = 40  # pixels/second^2
     MAX_CONE_SPEED = 500  # pixels/second
 
-    SCOOP_HEIGHT = 51  # height of ice cream scoop (px)
     WINDOW_HEIGHT = 600  # size of screen (px)
     WINDOW_WIDTH = 700  # size of screen (px)
     WINDOW_TITLE = 'The Best Ice Cream Game Known to Man'
@@ -101,8 +105,13 @@ class IceCreamGame:
 
             :return 0 if the window should stay open until the user closes it, or -1 if the window should be closed immediately
         """
+
+        # Time change from frame to frame
+        dt = 1 / self.FPS
+
         while True:
 
+            """ ---- Acceleration of the Cone and Stacked Scoops ---- """
             # Keep track of whether or not the user accelerated the cone with the keyboard
             cone_did_accelerate = False
 
@@ -112,10 +121,10 @@ class IceCreamGame:
                     return -1  # Exit immediately
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_LEFT:
-                        self.cone.accelerate(-self.CONE_ACCELERATION, 0, 1 / self.FPS, self.MAX_CONE_SPEED)
+                        self.cone.accelerate(-self.CONE_ACCELERATION, 0, dt, self.MAX_CONE_SPEED)
                         cone_did_accelerate = True
                     elif event.key == pygame.K_RIGHT:
-                        self.cone.accelerate(self.CONE_ACCELERATION, 0, 1 / self.FPS, self.MAX_CONE_SPEED)
+                        self.cone.accelerate(self.CONE_ACCELERATION, 0, dt, self.MAX_CONE_SPEED)
                         cone_did_accelerate = True
                     elif event.key == pygame.K_q:
                         return -1  # Exit immediately
@@ -124,20 +133,27 @@ class IceCreamGame:
             # If user didn't accelerate cone, simulate drag slowing it down
             if not cone_did_accelerate and self.cone.x_velocity != 0:
                 current_vel_sign = self.cone.x_velocity / math.fabs(self.cone.x_velocity)
-                self.cone.accelerate(-current_vel_sign*self.CONE_DRAG_ACCELERATION, 0, 1 / self.FPS, self.MAX_CONE_SPEED, True)
+                self.cone.accelerate(-current_vel_sign*self.CONE_DRAG_ACCELERATION, 0, dt, self.MAX_CONE_SPEED, True)
 
-            """ Update positions of objects """
+            """ ---- Update positions of everything ---- """
+            self.cone.update_state(dt)
+
             for i, scoop in enumerate(self.falling_scoops):
                 scoop.move(0, 1)  # TODO Remove hardcoding
                 # Remove off-screen scoops
-                if scoop.rect.top > self.WINDOW_HEIGHT:
+                if not scoop.is_on_screen(self.WINDOW_WIDTH, self.WINDOW_HEIGHT):
                     self.falling_scoops.remove(scoop)
             for obstacle in self.all_obstacles:
-                obstacle.update()
+                obstacle.update_state(dt)
                 # Remove off-screen obstacles
-                if obstacle.rect.top > self.WINDOW_HEIGHT:
+                if not obstacle.is_on_screen(self.WINDOW_WIDTH, self.WINDOW_HEIGHT):
                     self.all_obstacles.remove(obstacle)
 
+            self.background.update_state(pygame.time.get_ticks() / 1000)
+            if self.background.did_reach_end():
+                self.message_to_screen("You Win!", self.WHITE, self.WINDOW_WIDTH / 3, self.WINDOW_HEIGHT / 3)
+                pygame.display.update()
+                return 0  # Wait for user to exit
 
             """ ---- Collision Detection ---- """
             # Scoops onto cone (or top scoop on stack)
@@ -180,15 +196,7 @@ class IceCreamGame:
                 self.release_scoop()
                 self.time_till_next_scoop_release = random.uniform(1, 6)  # TODO Change bounds with time
 
-
-            self.cone.update_state(1/self.FPS)
-            self.background.update_state(elapsed_time)
-            if self.background.did_reach_end():
-                self.message_to_screen("You Win!", self.WHITE, self.WINDOW_WIDTH / 3, self.WINDOW_HEIGHT / 3)
-                pygame.display.update()
-                return 0  # Wait for user to exit
-
-            # Draw everything
+            """ ---- Draw everything ---- """
             pygame.display.update()  # updates the screen (for every run through the loop)
             self.background.draw(self.screen)
             for scoop in self.falling_scoops:
@@ -232,14 +240,14 @@ class IceCreamGame:
         else:
             raise Exception('Invalid obstacle type: %s' % obs_type)
 
-        obs.rect.bottom = -1  # Place just above top of screen
+        obs.rect.bottom = 1  # Place just at top of screen
         self.all_obstacles.append(obs)
 
     def release_scoop(self):
         """ Release a falling ice cream scoop """
         rand_x = random.randint(0, self.WINDOW_WIDTH)
         scoop = Scoop(rand_x, 0)
-        scoop.rect.bottom = -1  # Place just above top of screen
+        scoop.rect.bottom = 1  # Place just at top of screen
         self.falling_scoops.append(scoop)
 
 
