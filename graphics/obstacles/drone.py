@@ -2,10 +2,10 @@ from graphics.obstacles.obstacle import Obstacle
 from helpers import *
 
 
-class Leaf(Obstacle):
+class Drone(Obstacle):
 
     STARTING_MAX_HORIZONTAL_SPEED = 30  # pixels/second
-    MAX_WIND_SPEED = 30  # pixels/second
+    MAX_WIND_SPEED = 10  # pixels/second
     FALLING_SPEED = 10  # pixels/second
 
     def __init__(self, x_pos, y_pos):
@@ -16,7 +16,7 @@ class Leaf(Obstacle):
             scale: int - scales the size of the scoop
         """
         Obstacle.__init__(self, self.FALLING_SPEED, self.MAX_WIND_SPEED)
-        self.image, self.rect = load_image(os.path.join('assets', 'img', 'obstacles', 'leaf.png'), -1)
+        self.image, self.rect = load_image(os.path.join('assets', 'img', 'obstacles', 'drone.png'), -1)
+
         self.rect.x = x_pos
         self.rect.y = y_pos
-        self.y_velocity = self.FALLING_SPEED

@@ -8,7 +8,10 @@ class IceCreamCone(Graphic):
     SCOOP_CONE_OFFSET = 50  # draw the first scoop this many pixels below the top of the cone
     SCOOP_SCOOP_OFFSET = 50  # draw scoops this many pixels below the top of the previous scoop
 
-    def __init__(self, scale, x_pos, y_pos):
+    SCOOP_LANDING_ZONE = 20  # consider a scoop to have landed on top of the cone or another scoop if it is within
+                             # this many pixels of the top of the cone or top scoop (if any)
+
+    def __init__(self, x_pos, y_pos):
         """ Initializes an IceCreamCone object
 
             scale: an int used to scale the width and height to control the size
@@ -16,38 +19,34 @@ class IceCreamCone(Graphic):
             y_pos: the starting y-position of the cone
         """
         Graphic.__init__(self)
-        self.x_pos = x_pos
-        self.y_pos = y_pos
+        # Initialize our velocities to zero
         self.x_velocity = 0
         self.y_velocity = 0
         # Create a new sprite group to handle drawing all our sprites
         self.sprite_group = pygame.sprite.OrderedUpdates()
         # Create a new empty cone and add it to our sprite group
-        self.cone = EmptyCone(x_pos,y_pos)
+        self.cone = EmptyCone(x_pos, y_pos)
         self.sprite_group.add(self.cone)
         # Create a new list to keep track of the scoops on the cone
         self.scoops = list()
-        #self.height = effective_scoop_height
-        self.cone_img, self.rect = load_image(os.path.join('assets', 'img', 'cone.png'))
-        # making the cone from the cone image
 
-    # def move(self, dx, dy, loc = False):
-    #     """
-    #     moves the sprite group of cone and scoops by dx and dy
-    #
-    #     dx: change in x position
-    #     dy: change in y position
-    #     loc: if you want the location returned as a tuple or not
-    #     """
-
-    def accelerate(self, ax, ay, dt, max_speed):
+    def accelerate(self, ax, ay, dt, max_speed, due_to_drag=False):
         """ Accelerate the cone and its contents in the corresponding direction
 
             :param ax: the acceleration component in the x-direction
             :param ay: the acceleration component in the y-direction
             :param dt: the amount of time for which to accelerate the cone
+            :param max_speed: the maximum speed at which the cone can travel
+            :param due_to_drag: whether or not this acceleration is due to drag, in
+                   which case the velocity should not switch signs, but rather go to zero
         """
-        self.x_velocity += ax * dt
+        dv = ax * dt
+        # Check if we're decelerating due to drag and reaching 0
+        if due_to_drag and math.fabs(self.x_velocity) < math.fabs(dv):
+            self.x_velocity = 0
+        else:
+            self.x_velocity += dv
+        # Check if we're now going faster than our max allowed speed
         if math.fabs(self.x_velocity) > max_speed:
             self.x_velocity = max_speed * (self.x_velocity / math.fabs(self.x_velocity))
         locations = [(s.rect.x, s.rect.y) for s in self.sprite_group.sprites()]
@@ -55,7 +54,8 @@ class IceCreamCone(Graphic):
 
     def update_state(self, dt):
         """ Update the state (position, etc.) of the cone given a period of elapsed time
-        :param dt: the amount of time elapsed since the last update_state call
+
+            :param dt: the amount of time elapsed since the last update_state call
         """
         dx = math.ceil(self.x_velocity*dt)
         for sprite in self.sprite_group.sprites(): # Move each sprite in our group
@@ -76,18 +76,46 @@ class IceCreamCone(Graphic):
         # Center the scoop over the cone
         scoop.rect.centerx = self.cone.rect.centerx
         # Determine where the scoop should be placed such that it sits atop the stack
-        scoop_count = len(self.scoops)
         effective_scoop_height = scoop.rect.height - self.SCOOP_SCOOP_OFFSET
-        offset_from_cone_bottom = scoop_count*effective_scoop_height + self.cone.rect.height - self.SCOOP_CONE_OFFSET
-        # Shift all the scoops and cone down
-        for item in self.sprite_group.sprites():
-            item.rect.move_ip(0, effective_scoop_height)
+        scoop_count = len(self.scoops)
+        if scoop_count > 0:
+            current_top = self.scoops[-1].rect.top
+            offset_from_cone_bottom = self.cone.rect.bottom - current_top - self.SCOOP_SCOOP_OFFSET
+        else:
+            current_top = self.cone.rect.top
+            offset_from_cone_bottom = self.cone.rect.bottom - current_top - self.SCOOP_CONE_OFFSET
+
+        if len(self.scoops) > 2:
+            # Shift all the scoops and cone down
+            for item in self.sprite_group.sprites():
+                item.rect.move_ip(0, effective_scoop_height)
         # Put the scoop on top
         scoop.rect.bottom = self.cone.rect.bottom - offset_from_cone_bottom
 
         #adds to sprite group and appends to scoops object
         self.scoops.append(scoop)
         self.sprite_group.add(scoop)
+
+    def get_top_scoop(self):
+        """" Returns the scoop at the top of the stack, None if empty """
+        return self.scoops[-1] if len(self.scoops) > 0 else None
+
+    def get_rect(self):
+        """" Returns the rect enclosing the entire cone and scoop stack """
+        r = self.cone.rect.copy()
+        for scoop in self.scoops:
+            r.union_ip(scoop.rect)
+        return r
+
+    def get_cone_top_rect(self):
+        """" Returns a rect which represents the top of the cone (to use
+             when determining if a scoop has landed on the top of the cone
+             or the top scoop).
+         """
+        # Get the rect of whatever object is at the top of our stack (top scoop if any, cone otherwise)
+        r_model = self.scoops[-1].rect if len(self.scoops) > 0 else self.cone.rect
+        # Return a new rect of the proper height and aligned with the top of the old rect
+        return pygame.Rect(r_model.left, r_model.top, r_model.width, self.SCOOP_LANDING_ZONE)
 
     def draw(self, screen):
         """ 
@@ -102,7 +130,7 @@ class IceCreamCone(Graphic):
 
 class EmptyCone(Graphic):
 
-    def __init__(self, x_pos, y_pos, rect=None ):
+    def __init__(self, x_pos, y_pos):
         """ Initializes an EmptyCone object
 
             x_pos: the starting x-position of the cone
@@ -110,9 +138,5 @@ class EmptyCone(Graphic):
         """
         Graphic.__init__(self)
         self.image, self.rect = load_image(os.path.join('assets', 'img', 'cone.png'), -1)
-        self.rect = self.image.get_rect()
-        #sets x and y positions
-        self.rect.right = x_pos 
-        self.rect.bottom = y_pos
-        if rect:
-            self.rect = rect
+        self.rect.x = x_pos
+        self.rect.y = y_pos
