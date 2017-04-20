@@ -27,9 +27,10 @@ class IceCreamGame:
     RED = (255, 0, 0)
     BLUE = (0, 0, 255)
 
-    OBSTACLE_TYPES = [Leaf.__class__, Bee.__class__, Balloon.__class__, Drone.__class__, Asteroid.__class__]
+    OBSTACLE_TYPES = [Leaf, Bee, Balloon, Drone, Asteroid]
 
-    CONE_ACCELERATION = 80  # pixels/second^2
+    CONE_ACCELERATION = 100  # pixels/second^2
+    CONE_ACCELERATION_PLUS = 150  # pixels/second^2
     CONE_DRAG_ACCELERATION = 40  # pixels/second^2
     MAX_CONE_SPEED = 500  # pixels/second
 
@@ -39,7 +40,7 @@ class IceCreamGame:
 
     FPS = 20  # refresh rate (frames per second)
 
-    BG_CHANGE_SPEED_SCALAR = FPS / 30
+    BG_CHANGE_SPEED_SCALAR = FPS / 10
     BG_CHANGE_SPEED_EXP = 1.5
 
     def __init__(self):
@@ -120,11 +121,17 @@ class IceCreamGame:
                 if event.type == pygame.QUIT:
                     return -1  # Exit immediately
                 if event.type == pygame.KEYDOWN:
+                    # Pressing shift enables a speed boost
+                    key_mods = pygame.key.get_mods()
+                    accel = self.CONE_ACCELERATION_PLUS \
+                        if key_mods & pygame.KMOD_LSHIFT or key_mods & pygame.KMOD_RSHIFT \
+                        else self.CONE_ACCELERATION
+
                     if event.key == pygame.K_LEFT:
-                        self.cone.accelerate(-self.CONE_ACCELERATION, 0, dt, self.MAX_CONE_SPEED)
+                        self.cone.accelerate(-accel, 0, dt, self.MAX_CONE_SPEED)
                         cone_did_accelerate = True
                     elif event.key == pygame.K_RIGHT:
-                        self.cone.accelerate(self.CONE_ACCELERATION, 0, dt, self.MAX_CONE_SPEED)
+                        self.cone.accelerate(accel, 0, dt, self.MAX_CONE_SPEED)
                         cone_did_accelerate = True
                     elif event.key == pygame.K_q:
                         return -1  # Exit immediately
@@ -217,25 +224,25 @@ class IceCreamGame:
         """
         # Calculate background position
         y = self.BG_CHANGE_SPEED_SCALAR * math.pow(time_elapsed, self.BG_CHANGE_SPEED_EXP)
-        thresholds = [700*x for x in range(len(self.OBSTACLE_TYPES))]
+        thresholds = [400*x for x in range(len(self.OBSTACLE_TYPES))]
 
         obs_type = self.OBSTACLE_TYPES[0]
-        for i in range(len(thresholds)-1, -1, -1):
+        for i in range(len(thresholds)-1, 0, -1):
             if y > thresholds[i]:
                 obs_type = self.OBSTACLE_TYPES[i]
                 break
 
         rand_x_loc = random.randint(0, self.WINDOW_WIDTH)
-
-        if obs_type == Leaf.__class__:
+        print('Starting at {}'.format(rand_x_loc))
+        if obs_type == Leaf:
             obs = Leaf(rand_x_loc, 0)
-        elif obs_type == Bee.__class__:
+        elif obs_type == Bee:
             obs = Bee(rand_x_loc, 0)
-        elif obs_type == Drone.__class__:
+        elif obs_type == Drone:
             obs = Drone(rand_x_loc, 0)
         elif obs_type == Balloon:
             obs = Balloon(rand_x_loc, 0)
-        elif obs_type == Asteroid.__class__:
+        elif obs_type == Asteroid:
             obs = Asteroid(rand_x_loc, 0)
         else:
             raise Exception('Invalid obstacle type: %s' % obs_type)
@@ -251,7 +258,8 @@ class IceCreamGame:
         self.falling_scoops.append(scoop)
 
 
-    def wait_for_close(self):
+    @staticmethod
+    def wait_for_close():
         """ Pause execution until the user clicks Close """
         time.sleep(2)
         while True:

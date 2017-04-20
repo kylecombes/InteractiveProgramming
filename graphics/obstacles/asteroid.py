@@ -1,9 +1,15 @@
 from graphics.obstacles.obstacle import Obstacle
 from helpers import *
 import random
+import math
 
 
 class Asteroid(Obstacle):
+
+    MAX_HORIZONTAL_SPEED = 30  # pixels/second
+    MIN_HORIZONTAL_SPEED = 12  # pixels/second
+    FALLING_SPEED = 30  # pixels/second
+
 
     def __init__(self, x_pos, y_pos):
         """ Initializes a new Scoop object at the given position and scale.
@@ -12,77 +18,24 @@ class Asteroid(Obstacle):
             y_pos: int - the y-coordinate of the top-left corner
             scale: int - scales the size of the scoop
         """
-        Obstacle.__init__(self)
+        Obstacle.__init__(self, self.FALLING_SPEED, 0)
         self.image, self.rect = load_image(os.path.join('assets', 'img', 'obstacles', 'asteroid.png'), -1)
 
-        self.x_pos = x_pos
-        self.y_pos = y_pos
-
-    def draw(self, screen):
-        """ Draws the Obstacles """
-        screen.blit(self.image, (self.x_pos,self.y_pos))  #The input tuble is the location in x and y respectivly 
-
-    def display_moving_asteroids(self, asteroids, current_number_of_scoops, display_width, display_height, screen):
-        """
-        Displays moving leaves at intervals in the range of the correct background. Takes other
-        instances of asteroid obstacle class to get several differnt obstacles.
-
-        self2-self6: sequence of instances of obstacle
-        current_number_of_scoops: num of scoops to gauge when to draw obstacles
-        display_width: screen x size
-        display_height: screen y size
-        screen: screen to draw on
-        """
-        randomspeed = random.randint(15,30) #gets random speed for each obstacle
-        #the following statements checks for number of scoops to tell when to shoot obstacles
-        #each move function takes an x direction speed (ususally 0) and a y direction seed
-        # the display width and display height as also needed to move the obstacles
-        if current_number_of_scoops > 110:
-            self.move_obstacle(0,randomspeed,display_width, display_height)
-            self.draw(screen)
-        if current_number_of_scoops > 125:
-            asteroids[1].move_obstacle(0,randomspeed,display_width, display_height)
-            asteroids[1].draw(screen)
-        if current_number_of_scoops >136:
-            asteroids[2].move_obstacle(0,randomspeed,display_width, display_height)
-            asteroids[2].draw(screen)
-        if current_number_of_scoops > 147:
-            asteroids[3].move_obstacle(4,randomspeed,display_width, display_height)
-            asteroids[3].draw(screen)
-        if current_number_of_scoops > 160:
-            asteroids[4].move_obstacle(5,randomspeed,display_width, display_height)
-            asteroids[4].draw(screen)
-        if current_number_of_scoops > 175:
-            asteroids[5].move_obstacle(0,randomspeed,display_width, display_height)
-            asteroids[5].draw(screen)
+        self.rect.x = x_pos
+        self.rect.y = y_pos
+        # Pick a random direction (left or right) and speed within the specified range
+        direction = 1 if random.randint(0, 1) == 1 else -1
+        self.x_velocity = random.randint(self.MIN_HORIZONTAL_SPEED, self.MAX_HORIZONTAL_SPEED) * direction
 
 
-        """
-        KEY FOR NUMBER OF SCOOPS AND OBSTACLES:
-        Number of Scoops: Obstacle in that range
-        0-30: leaves
-        30-50: bee
-        50-80: drones
-        80-110: ballons
-        110-223: asteroids
-        """
+    def update_state(self, dt):
+        """ Update the object position and any other state attributes
 
-    def move_obstacle(self, speed_x, speed_y, display_width, display_height):
-        """
-        Take an object and a speed as a paramter and maves it move through the screen. 
-        The speed is how many pixels it moves each loop though, 10 is a good number to start with.
+            :param dt: (int) the amount of time that has passed since the last call
+         """
+        dx = math.ceil(self.x_velocity * dt)
+        # Also descend
+        dy = math.ceil(self.y_velocity * dt)
+        self.rect.move_ip(dx, dy)
 
-        speed_x: speed in x position
-        speed_y: speed in y position
-        display_width: screen x size
-        display_height: screen y size
-        """
-        self.x_pos += speed_x
-        self.y_pos += speed_y
-        if self.x_pos > display_width: 
-            self.x_pos = display_width + 100
-            #checks if obstacle is out of screen and stops it from moving
-            #100 is how much over the edge of the screen it needs to be to stop moving
-        if self.y_pos > display_height:
-            self.y_pos = display_height + 100
 
